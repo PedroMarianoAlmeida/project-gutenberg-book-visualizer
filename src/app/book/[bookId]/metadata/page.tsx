@@ -7,11 +7,25 @@ export const BookPage = async ({
 }) => {
   const { bookId } = await params;
   const bookMetadata = await getBookMetadata(Number(bookId));
-  console.log({ bookMetadata });
+
+  if (!bookMetadata.success) {
+    return (
+      <p className="text-destructive">
+        {bookMetadata.message === "Book not found"
+          ? "Book not found"
+          : "Error fetching data"}
+      </p>
+    );
+  }
   return (
-    <div>
-      <h1>Book {bookId} Page</h1>
-    </div>
+    <main>
+      <h1>Book #{bookId}</h1>
+      <h2>Is this book?</h2>
+      <ul>
+        <li>Title: {bookMetadata.result.Title}</li>
+        <li>Author(s): {bookMetadata.result.Authors}</li>
+      </ul>
+    </main>
   );
 };
 
