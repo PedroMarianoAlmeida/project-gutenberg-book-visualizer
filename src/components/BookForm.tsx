@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -33,6 +34,7 @@ const transformedSchema = rawSchema.transform(({ bookId }) => ({
 }));
 
 export const BookForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof rawSchema>>({
     resolver: zodResolver(rawSchema),
     defaultValues: {
@@ -41,7 +43,7 @@ export const BookForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof transformedSchema>) {
-    console.log({ values });
+    router.push(`book/${values.bookId}`);
   }
 
   return (
