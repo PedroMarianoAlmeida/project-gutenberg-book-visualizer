@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { BookForm } from "@/components/BookForm";
 
 export default function Home() {
   return (
     <div>
-      <Button>Click me</Button>
+      <BookForm />
     </div>
   );
 }
