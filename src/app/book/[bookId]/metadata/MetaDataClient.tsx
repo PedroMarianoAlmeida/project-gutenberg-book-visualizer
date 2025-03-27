@@ -28,13 +28,23 @@ export const MetaDataClient = ({
           <></>
         </Step>
         <Step>
-          <h1>Book #{bookId}</h1>
+          <h1 className="text-center">Book #{bookId}</h1>
           <h2 className="text-center mb-4 text-xl">
             It is this book that you are looking for? 🤓
           </h2>
           <ul>
-            <li>Title: {bookTitle}</li>
-            <li>Author(s): {bookAuthor}</li>
+            <li className="mb-4">
+              <div className="flex flex-col items-center">
+                <span className="font-bold">Title</span>
+                {bookTitle}
+              </div>
+            </li>
+            <li>
+              <div className="flex flex-col items-center">
+                <span className="font-bold">Author(s)</span>
+                {bookAuthor}
+              </div>
+            </li>
           </ul>
         </Step>
         <Step>
