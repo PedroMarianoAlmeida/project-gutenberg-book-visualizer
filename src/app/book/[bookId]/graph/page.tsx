@@ -54,7 +54,7 @@ export default async function Page({
       </h1>
       <Link
         href="/"
-        className="absolute bottom-4 left-4 p-2 rounded-full bg-background/80 backdrop-blur-sm shadow-sm hover:bg-background transition-colors duration-200"
+        className="absolute bottom-4 left-4 p-2 rounded-full bg-background/80 backdrop-blur-sm shadow-sm hover:bg-background transition-colors duration-200 z-10"
         aria-label="Go back to home page"
       >
         <Home className="h-5 w-5" />
