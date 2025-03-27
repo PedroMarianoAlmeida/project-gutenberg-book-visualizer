@@ -1,4 +1,6 @@
 import { getBookText } from "@/services/gutenbergService";
+import { createGraphData } from "@/services/aiServices";
+
 export const BookPage = async ({
   params,
 }: {
@@ -17,10 +19,14 @@ export const BookPage = async ({
     );
   }
 
+  const graphData = await createGraphData(bookText.result);
+  if (!graphData.success)
+    return <p className="text-destructive">Error creating graph</p>;
+
   return (
     <div>
       <h1>Book {bookId} Page</h1>
-      <p>{bookText.result}</p>
+      <p>{JSON.stringify(graphData.result)}</p>
     </div>
   );
 };
