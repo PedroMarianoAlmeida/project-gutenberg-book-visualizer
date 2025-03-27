@@ -5,6 +5,8 @@ import React, {
   useLayoutEffect,
   HTMLAttributes,
   ReactNode,
+  forwardRef,
+  useImperativeHandle,
 } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 
@@ -29,139 +31,156 @@ interface StepperProps extends HTMLAttributes<HTMLDivElement> {
   }) => ReactNode;
 }
 
-export default function Stepper({
-  children,
-  initialStep = 1,
-  onStepChange = () => {},
-  onFinalStepCompleted = () => {},
-  stepCircleContainerClassName = "",
-  stepContainerClassName = "",
-  contentClassName = "",
-  footerClassName = "",
-  backButtonProps = {},
-  nextButtonProps = {},
-  backButtonText = "Back",
-  nextButtonText = "Continue",
-  disableStepIndicators = false,
-  renderStepIndicator,
-  ...rest
-}: StepperProps) {
-  const [currentStep, setCurrentStep] = useState<number>(initialStep);
-  const [direction, setDirection] = useState<number>(0);
-  const stepsArray = Children.toArray(children);
-  const totalSteps = stepsArray.length;
-  const isCompleted = currentStep > totalSteps;
-  const isLastStep = currentStep === totalSteps;
+export interface StepperHandle {
+  nextStep: () => void;
+}
 
-  const updateStep = (newStep: number) => {
-    setCurrentStep(newStep);
-    if (newStep > totalSteps) {
-      onFinalStepCompleted();
-    } else {
-      onStepChange(newStep);
-    }
-  };
+const Stepper = forwardRef<StepperHandle, StepperProps>(
+  (
+    {
+      children,
+      initialStep = 1,
+      onStepChange = () => {},
+      onFinalStepCompleted = () => {},
+      stepCircleContainerClassName = "",
+      stepContainerClassName = "",
+      contentClassName = "",
+      footerClassName = "",
+      backButtonProps = {},
+      nextButtonProps = {},
+      backButtonText = "Back",
+      nextButtonText = "Continue",
+      disableStepIndicators = false,
+      renderStepIndicator,
+      ...rest
+    },
+    ref
+  ) => {
+    const [currentStep, setCurrentStep] = useState<number>(initialStep);
+    const [direction, setDirection] = useState<number>(0);
+    const stepsArray = Children.toArray(children);
+    const totalSteps = stepsArray.length;
+    const isCompleted = currentStep > totalSteps;
+    const isLastStep = currentStep === totalSteps;
 
-  const handleBack = () => {
-    if (currentStep > 1) {
-      setDirection(-1);
-      updateStep(currentStep - 1);
-    }
-  };
+    const updateStep = (newStep: number) => {
+      setCurrentStep(newStep);
+      if (newStep > totalSteps) {
+        onFinalStepCompleted();
+      } else {
+        onStepChange(newStep);
+      }
+    };
 
-  const handleNext = () => {
-    if (!isLastStep) {
+    const handleBack = () => {
+      if (currentStep > 1) {
+        setDirection(-1);
+        updateStep(currentStep - 1);
+      }
+    };
+
+    const handleNext = () => {
+      if (!isLastStep) {
+        setDirection(1);
+        updateStep(currentStep + 1);
+      }
+    };
+
+    const handleComplete = () => {
       setDirection(1);
-      updateStep(currentStep + 1);
-    }
-  };
+      updateStep(totalSteps + 1);
+    };
 
-  const handleComplete = () => {
-    setDirection(1);
-    updateStep(totalSteps + 1);
-  };
+    // Expose nextStep method for external use
+    useImperativeHandle(ref, () => ({
+      nextStep: handleNext,
+    }));
 
-  return (
-    <div
-      className="flex min-h-full flex-1 flex-col items-center justify-center p-4 sm:aspect-[4/3] md:aspect-[2/1]"
-      {...rest}
-    >
+    return (
       <div
-        className={`mx-auto w-full max-w-md rounded-4xl shadow-xl ${stepCircleContainerClassName}`}
-        style={{ border: "1px solid #222" }}
+        className="flex min-h-full flex-1 flex-col items-center justify-center p-4 sm:aspect-[4/3] md:aspect-[2/1]"
+        {...rest}
       >
         <div
-          className={`${stepContainerClassName} flex w-full items-center p-8`}
+          className={`mx-auto w-full max-w-md rounded-4xl shadow-xl ${stepCircleContainerClassName}`}
+          style={{ border: "1px solid #222" }}
         >
-          {stepsArray.map((_, index) => {
-            const stepNumber = index + 1;
-            const isNotLastStep = index < totalSteps - 1;
-            return (
-              <React.Fragment key={stepNumber}>
-                {renderStepIndicator ? (
-                  renderStepIndicator({
-                    step: stepNumber,
-                    currentStep,
-                    onStepClick: (clicked) => {
-                      setDirection(clicked > currentStep ? 1 : -1);
-                      updateStep(clicked);
-                    },
-                  })
-                ) : (
-                  <StepIndicator
-                    step={stepNumber}
-                    disableStepIndicators={disableStepIndicators}
-                    currentStep={currentStep}
-                    onClickStep={(clicked) => {
-                      setDirection(clicked > currentStep ? 1 : -1);
-                      updateStep(clicked);
-                    }}
-                  />
-                )}
-                {isNotLastStep && (
-                  <StepConnector isComplete={currentStep > stepNumber} />
-                )}
-              </React.Fragment>
-            );
-          })}
-        </div>
-
-        <StepContentWrapper
-          isCompleted={isCompleted}
-          currentStep={currentStep}
-          direction={direction}
-          className={`space-y-2 px-8 ${contentClassName}`}
-        >
-          {stepsArray[currentStep - 1]}
-        </StepContentWrapper>
-
-        {!isCompleted && (
-          <div className={`px-8 pb-8 ${footerClassName}`}>
-            <div
-              className={`mt-10 flex ${
-                currentStep !== 1 ? "justify-between" : "justify-end"
-              }`}
-            >
-              {currentStep !== 1 && (
-                <button
-                  onClick={handleBack}
-                  className={`duration-350 rounded px-2 py-1 transition ${
-                    currentStep === 1
-                      ? "pointer-events-none opacity-50 text-neutral-400"
-                      : "text-neutral-400 hover:text-neutral-700"
-                  }`}
-                  {...backButtonProps}
-                >
-                  {backButtonText}
-                </button>
-              )}
-            </div>
+          <div
+            className={`${stepContainerClassName} flex w-full items-center p-8`}
+          >
+            {stepsArray.map((_, index) => {
+              const stepNumber = index + 1;
+              const isNotLastStep = index < totalSteps - 1;
+              return (
+                <React.Fragment key={stepNumber}>
+                  {renderStepIndicator ? (
+                    renderStepIndicator({
+                      step: stepNumber,
+                      currentStep,
+                      onStepClick: (clicked) => {
+                        setDirection(clicked > currentStep ? 1 : -1);
+                        updateStep(clicked);
+                      },
+                    })
+                  ) : (
+                    <StepIndicator
+                      step={stepNumber}
+                      disableStepIndicators={disableStepIndicators}
+                      currentStep={currentStep}
+                      onClickStep={(clicked) => {
+                        setDirection(clicked > currentStep ? 1 : -1);
+                        updateStep(clicked);
+                      }}
+                    />
+                  )}
+                  {isNotLastStep && (
+                    <StepConnector isComplete={currentStep > stepNumber} />
+                  )}
+                </React.Fragment>
+              );
+            })}
           </div>
-        )}
+
+          <StepContentWrapper
+            isCompleted={isCompleted}
+            currentStep={currentStep}
+            direction={direction}
+            className={`space-y-2 px-8 ${contentClassName}`}
+          >
+            {stepsArray[currentStep - 1]}
+          </StepContentWrapper>
+
+          {!isCompleted && (
+            <div className={`px-8 pb-8 ${footerClassName}`}>
+              <div
+                className={`mt-10 flex ${
+                  currentStep !== 1 ? "justify-between" : "justify-end"
+                }`}
+              >
+                {currentStep !== 1 && (
+                  <button
+                    onClick={handleBack}
+                    className={`duration-350 rounded px-2 py-1 transition ${
+                      currentStep === 1
+                        ? "pointer-events-none opacity-50 text-neutral-400"
+                        : "text-neutral-400 hover:text-neutral-700"
+                    }`}
+                    {...backButtonProps}
+                  >
+                    {backButtonText}
+                  </button>
+                )}
+                {/* Optionally you can add a Next/Complete button here if needed */}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+);
+
+export default Stepper;
 
 interface StepContentWrapperProps {
   isCompleted: boolean;

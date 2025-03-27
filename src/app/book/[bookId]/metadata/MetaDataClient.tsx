@@ -1,5 +1,7 @@
 "use client";
-import Stepper, { Step } from "@/components/react-bits/Stepper";
+import React, { useEffect, useRef } from "react";
+
+import Stepper, { StepperHandle, Step } from "@/components/react-bits/Stepper";
 
 interface MetaDataClientProps {
   bookId: number;
@@ -11,9 +13,17 @@ export const MetaDataClient = ({
   bookId,
   bookTitle,
 }: MetaDataClientProps) => {
+  const stepperRef = useRef<StepperHandle>(null);
+
+  useEffect(() => {
+    if (stepperRef.current) {
+      stepperRef.current.nextStep();
+    }
+  }, []);
+
   return (
     <main>
-      <Stepper initialStep={1} disableStepIndicators>
+      <Stepper initialStep={1} disableStepIndicators ref={stepperRef}>
         <Step>
           <></>
         </Step>
