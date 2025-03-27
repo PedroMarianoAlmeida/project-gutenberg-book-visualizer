@@ -38,7 +38,7 @@ export const MetaDataClient = ({
               <li>
                 <div className="flex flex-col items-center">
                   <span className="font-bold">Author(s)</span>
-                  <span className="text-center">{bookAuthor}</span>
+                  <span className="text-center">{bookAuthor || "Unknown"}</span>
                 </div>
               </li>
             </ul>
