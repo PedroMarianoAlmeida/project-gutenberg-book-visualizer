@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import React, { useEffect, useRef } from "react";
 
 import Stepper, { StepperHandle, Step } from "@/components/react-bits/Stepper";
@@ -65,8 +66,12 @@ export const MetaDataClient = ({
               </li>
             </ul>
             <div className="flex flex-col gap-4">
-              <Button variant="outline">Yes, create my Graph</Button>
-              <Button variant="destructive">No, I will add another Id</Button>
+              <Link href={`/book/${bookId}/graph`}>
+                <Button variant="outline">Yes, create my Graph</Button>
+              </Link>
+              <Link href="/">
+                <Button variant="destructive">No, I will add another Id</Button>
+              </Link>
             </div>
           </div>
         </Step>
