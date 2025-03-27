@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import Stepper, { StepperHandle, Step } from "@/components/react-bits/Stepper";
 
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { BookForm } from "@/components/StaticBookForm";
 
@@ -24,21 +25,32 @@ export default function Loading() {
         </Step>
         <Step>
           <div className="flex flex-col gap-4 items-center">
-            <h1 className="text-center">Book #XXX</h1>
+            <div className="flex gap-2">
+              <h1 className="text-center">Book #</h1>
+              <Skeleton className="w-4" />
+            </div>
             <h2 className="text-center text-xl">
               It is this book that you are looking for? 🤓
             </h2>
             <ul>
               <li className="mb-4">
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center gap-4">
                   <span className="font-bold">Title</span>
-                  <span className="text-center">Skeleton 1</span>
+                  <div className="flex gap-2">
+                    <Skeleton className="w-4 h-6" />
+                    <Skeleton className="w-20 h-6" />
+                    <Skeleton className="w-8 h-6" />
+                  </div>
                 </div>
               </li>
               <li>
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center gap-4">
                   <span className="font-bold">Author(s)</span>
-                  <span className="text-center">Skeleton 2</span>
+                  <div className="flex gap-2">
+                    <Skeleton className="w-30 h-6" />
+                    <Skeleton className="w-16 h-6" />
+                    <Skeleton className="w-20 h-6" />
+                  </div>
                 </div>
               </li>
             </ul>
