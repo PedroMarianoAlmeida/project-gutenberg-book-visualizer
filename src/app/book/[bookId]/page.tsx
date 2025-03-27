@@ -1,5 +1,7 @@
 import { getBookText } from "@/services/gutenbergService";
 import { createGraphData } from "@/services/aiServices";
+import mockData from "@/app/book/[bookId]/graphDataSample.json";
+import { Result } from "./Result";
 
 export const BookPage = async ({
   params,
@@ -26,7 +28,8 @@ export const BookPage = async ({
   return (
     <div>
       <h1>Book {bookId} Page</h1>
-      <p>{JSON.stringify(graphData.result)}</p>
+      <Result graphData={graphData.result.bokGraphData} />
+      {/* <Result graphData={mockData}/> */}
     </div>
   );
 };
