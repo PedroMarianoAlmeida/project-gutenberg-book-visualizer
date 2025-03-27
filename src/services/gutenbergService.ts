@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { asyncWrapper } from "@/utils/asyncWrapper";
 import { streamToString } from "@/utils/streamToString";
@@ -8,13 +8,24 @@ const gutenbergUrl = "https://www.gutenberg.org/";
 
 export const getBookText = async (bookId: number) => {
   return asyncWrapper(async () => {
-    const res = await fetch(`${gutenbergUrl}files/${bookId}/${bookId}-0.txt`);
-    if (res.status === 404) throw new Error("Book not found");
-    if (!res.ok) throw new Error("Error fetching book");
-    if (res.body === null) throw new Error("Book has no content");
+    const urls = [
+      `${gutenbergUrl}files/${bookId}/${bookId}-0.txt`,
+      `${gutenbergUrl}/cache/epub/${bookId}/pg${bookId}.txt`,
+    ];
 
-    const bookText = await streamToString(res.body);
-    return bookText;
+    const results = await Promise.allSettled(urls.map((url) => fetch(url)));
+
+    for (const result of results) {
+      if (
+        result.status === "fulfilled" &&
+        result.value.ok &&
+        result.value.body !== null
+      ) {
+        return await streamToString(result.value.body);
+      }
+    }
+
+    throw new Error("Book not found in any known location");
   });
 };
 
