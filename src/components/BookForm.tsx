@@ -43,7 +43,7 @@ export const BookForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof transformedSchema>) {
-    router.push(`book/${values.bookId}`);
+    router.push(`book/${values.bookId}/metadata`);
   }
 
   return (
