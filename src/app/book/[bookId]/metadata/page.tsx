@@ -1,4 +1,5 @@
 import { getBookMetadata } from "@/services/gutenbergService";
+import { MetaDataClient } from "./MetaDataClient";
 
 export const BookPage = async ({
   params,
@@ -17,15 +18,14 @@ export const BookPage = async ({
       </p>
     );
   }
+
+  const { Authors, Title } = bookMetadata.result;
   return (
-    <main>
-      <h1>Book #{bookId}</h1>
-      <h2>Is this book?</h2>
-      <ul>
-        <li>Title: {bookMetadata.result.Title}</li>
-        <li>Author(s): {bookMetadata.result.Authors}</li>
-      </ul>
-    </main>
+    <MetaDataClient
+      bookAuthor={Authors}
+      bookId={Number(bookId)}
+      bookTitle={Title}
+    />
   );
 };
 
