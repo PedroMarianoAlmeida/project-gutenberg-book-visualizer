@@ -6,8 +6,6 @@ import Stepper, { Step } from "@/components/react-bits/Stepper";
 
 import { Button } from "@/components/ui/button";
 
-import { BookForm } from "@/components/StaticBookForm";
-
 interface MetaDataClientProps {
   bookId: number;
   bookTitle: string;
