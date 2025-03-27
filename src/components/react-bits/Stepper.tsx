@@ -18,11 +18,6 @@ interface StepperProps extends HTMLAttributes<HTMLDivElement> {
   stepCircleContainerClassName?: string;
   stepContainerClassName?: string;
   contentClassName?: string;
-  footerClassName?: string;
-  backButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
-  nextButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
-  backButtonText?: string;
-  nextButtonText?: string;
   disableStepIndicators?: boolean;
   renderStepIndicator?: (props: {
     step: number;
@@ -45,11 +40,6 @@ const Stepper = forwardRef<StepperHandle, StepperProps>(
       stepCircleContainerClassName = "",
       stepContainerClassName = "",
       contentClassName = "",
-      footerClassName = "",
-      backButtonProps = {},
-      nextButtonProps = {},
-      backButtonText = "Back",
-      nextButtonText = "Continue",
       disableStepIndicators = false,
       renderStepIndicator,
       ...rest
@@ -72,13 +62,6 @@ const Stepper = forwardRef<StepperHandle, StepperProps>(
       }
     };
 
-    const handleBack = () => {
-      if (currentStep > 1) {
-        setDirection(-1);
-        updateStep(currentStep - 1);
-      }
-    };
-
     const handleNext = () => {
       if (!isLastStep) {
         setDirection(1);
@@ -86,12 +69,6 @@ const Stepper = forwardRef<StepperHandle, StepperProps>(
       }
     };
 
-    const handleComplete = () => {
-      setDirection(1);
-      updateStep(totalSteps + 1);
-    };
-
-    // Expose nextStep method for external use
     useImperativeHandle(ref, () => ({
       nextStep: handleNext,
     }));
@@ -333,9 +310,7 @@ function StepConnector({ isComplete }: StepConnectorProps) {
   );
 }
 
-interface CheckIconProps extends React.SVGProps<SVGSVGElement> {}
-
-function CheckIcon(props: CheckIconProps) {
+function CheckIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -360,3 +335,5 @@ function CheckIcon(props: CheckIconProps) {
     </svg>
   );
 }
+
+Stepper.displayName = "Stepper";

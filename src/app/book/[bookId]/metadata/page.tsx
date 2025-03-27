@@ -1,11 +1,11 @@
 import { getBookMetadata } from "@/services/gutenbergService";
 import { MetaDataClient } from "./MetaDataClient";
 
-export const BookPage = async ({
+export default async function Page({
   params,
 }: {
   params: Promise<{ bookId: string }>;
-}) => {
+}) {
   const { bookId } = await params;
   const bookMetadata = await getBookMetadata(Number(bookId));
 
@@ -27,6 +27,4 @@ export const BookPage = async ({
       bookTitle={Title}
     />
   );
-};
-
-export default BookPage;
+}

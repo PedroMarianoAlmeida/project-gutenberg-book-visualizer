@@ -3,18 +3,21 @@ import { Home } from "lucide-react";
 
 import { getBookText, getBookMetadata } from "@/services/gutenbergService";
 import { createGraphData } from "@/services/aiServices";
-import mockData from "./graphDataSample.json";
+// import mockData from "./graphDataSample.json";
 import { Result } from "./Result";
 import { Error } from "./Error";
 
-export const BookPage = async ({
+export default async function Page({
   params,
 }: {
   params: Promise<{ bookId: string }>;
-}) => {
+}) {
   const { bookId } = await params;
-  const bookText = await getBookText(Number(bookId));
-  const bookMetadata = await getBookMetadata(Number(bookId));
+
+  const [bookText, bookMetadata] = await Promise.all([
+    getBookText(Number(bookId)),
+    getBookMetadata(Number(bookId)),
+  ]);
 
   if (!bookMetadata.success)
     return (
@@ -58,6 +61,4 @@ export const BookPage = async ({
       {/* <Result graphData={mockData} /> */}
     </main>
   );
-};
-
-export default BookPage;
+}

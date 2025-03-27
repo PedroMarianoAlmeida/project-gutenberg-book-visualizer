@@ -18,7 +18,7 @@ export const asyncWrapper = async <T>(
   try {
     const result = await callback();
     return { success: true, result };
-  } catch (error: any) {
+  } catch (error: unknown) {
     let message = "Unknown Error";
     if (error instanceof Error) message = error.message;
     console.log(error);
