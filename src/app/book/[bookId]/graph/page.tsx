@@ -43,8 +43,10 @@ export const BookPage = async ({
   if (!graphData.success) return <Error message="Error creating graph" />;
 
   return (
-    <main className="p-4">
-      <h1 className="text-center text-xl">{bookMetadata.result.Title}</h1>
+    <main className="p-4 w-full">
+      <h1 className="text-center text-xl w-full">
+        {bookMetadata.result.Title}
+      </h1>
       <Link
         href="/"
         className="absolute bottom-4 left-4 p-2 rounded-full bg-background/80 backdrop-blur-sm shadow-sm hover:bg-background transition-colors duration-200"
@@ -53,7 +55,7 @@ export const BookPage = async ({
         <Home className="h-5 w-5" />
       </Link>
       <Result graphData={graphData.result.bokGraphData} />
-      {/* <Result graphData={mockData}/> */}
+      {/* <Result graphData={mockData} /> */}
     </main>
   );
 };

@@ -1,6 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { z } from "zod";
+import { useWindowSize } from "@uidotdev/usehooks";
 
 import { graphAiSchema } from "@/services/aiServices";
 import { calculateCharacterImportance } from "@/app/book/[bookId]/graph/graphDataSanitize";
@@ -19,13 +20,15 @@ type CustomNode = {
 type GraphData = z.infer<typeof graphAiSchema>;
 
 export const Result = ({ graphData }: { graphData: GraphData }) => {
+  const { height, width } = useWindowSize();
   const characterImportance = calculateCharacterImportance(graphData);
 
   return (
     <div className="flex justify-center items-center">
       <ForceGraph2D
+        height={height ?? 500}
+        width={width ?? 500}
         graphData={graphData}
-        enablePanInteraction={false}
         linkColor={() => "#d9eaef"}
         linkLabel={(link) => link.relation}
         nodeCanvasObject={(node, ctx, globalScale) => {
