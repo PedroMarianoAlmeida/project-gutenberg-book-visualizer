@@ -2,6 +2,7 @@ import { getBookText } from "@/services/gutenbergService";
 import { createGraphData } from "@/services/aiServices";
 import mockData from "./graphDataSample.json";
 import { Result } from "./Result";
+import { Error } from "./Error";
 
 export const BookPage = async ({
   params,
@@ -22,8 +23,7 @@ export const BookPage = async ({
   }
 
   const graphData = await createGraphData(bookText.result);
-  if (!graphData.success)
-    return <p className="text-destructive">Error creating graph</p>;
+  if (!graphData.success) return <Error />;
 
   return (
     <div>
