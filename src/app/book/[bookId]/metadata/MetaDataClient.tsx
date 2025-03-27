@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from "react";
 
 import Stepper, { StepperHandle, Step } from "@/components/react-bits/Stepper";
+import DecryptedText from "@/components/react-bits/DecryptedText";
 
 interface MetaDataClientProps {
   bookId: number;
@@ -36,13 +37,27 @@ export const MetaDataClient = ({
             <li className="mb-4">
               <div className="flex flex-col items-center">
                 <span className="font-bold">Title</span>
-                {bookTitle}
+                <DecryptedText
+                  text={bookTitle}
+                  animateOn="view"
+                  speed={200}
+                  maxIterations={20}
+                  useOriginalCharsOnly
+                  revealDirection="start"
+                />
               </div>
             </li>
             <li>
               <div className="flex flex-col items-center">
                 <span className="font-bold">Author(s)</span>
-                {bookAuthor}
+                <DecryptedText
+                  text={bookAuthor}
+                  animateOn="view"
+                  speed={200}
+                  maxIterations={20}
+                  useOriginalCharsOnly
+                  revealDirection="start"
+                />
               </div>
             </li>
           </ul>
