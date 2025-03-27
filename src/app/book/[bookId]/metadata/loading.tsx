@@ -16,7 +16,7 @@ export default function Loading() {
       stepperRef.current.nextStep();
     }
   }, []);
-
+  // This stepper is kind of duplicated with the MetaDataClient, but here is mocked data and Skeleton, so it is UI only... Separations of concerns wins DRY in this case
   return (
     <main>
       <Stepper initialStep={1} disableStepIndicators ref={stepperRef}>
@@ -30,7 +30,7 @@ export default function Loading() {
               <Skeleton className="w-4" />
             </div>
             <h2 className="text-center text-xl">
-              It is this book that you are looking for? 🤓
+              It is this book that you are looking for?
             </h2>
             <ul>
               <li className="mb-4">

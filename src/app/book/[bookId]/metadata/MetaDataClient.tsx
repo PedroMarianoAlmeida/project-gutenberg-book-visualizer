@@ -28,7 +28,7 @@ export const MetaDataClient = ({
           <div className="flex flex-col gap-4 items-center">
             <h1 className="text-center">Book #{bookId}</h1>
             <h2 className="text-center text-xl">
-              It is this book that you are looking for? 🤓
+              It is this book that you are looking for?
             </h2>
             <ul>
               <li className="mb-4">
