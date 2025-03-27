@@ -94,7 +94,7 @@ export const BookForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Generate Graph</Button>
+          <Button type="submit">Check Book</Button>
         </form>
       </Form>
     </section>
