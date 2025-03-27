@@ -102,7 +102,7 @@ const Stepper = forwardRef<StepperHandle, StepperProps>(
         {...rest}
       >
         <div
-          className={`mx-auto w-full max-w-md rounded-4xl shadow-xl ${stepCircleContainerClassName}`}
+          className={`mx-auto w-full max-w-md rounded-4xl shadow-xl ${stepCircleContainerClassName} p-4`}
           style={{ border: "1px solid #222" }}
         >
           <div
@@ -149,16 +149,6 @@ const Stepper = forwardRef<StepperHandle, StepperProps>(
           >
             {stepsArray[currentStep - 1]}
           </StepContentWrapper>
-
-          {!isCompleted && (
-            <div className={`px-8 pb-8 ${footerClassName}`}>
-              <div
-                className={`mt-10 flex ${
-                  currentStep !== 1 ? "justify-between" : "justify-end"
-                }`}
-              ></div>
-            </div>
-          )}
         </div>
       </div>
     );
