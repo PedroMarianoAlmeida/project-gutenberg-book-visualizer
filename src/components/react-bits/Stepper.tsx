@@ -156,22 +156,7 @@ const Stepper = forwardRef<StepperHandle, StepperProps>(
                 className={`mt-10 flex ${
                   currentStep !== 1 ? "justify-between" : "justify-end"
                 }`}
-              >
-                {currentStep !== 1 && (
-                  <button
-                    onClick={handleBack}
-                    className={`duration-350 rounded px-2 py-1 transition ${
-                      currentStep === 1
-                        ? "pointer-events-none opacity-50 text-neutral-400"
-                        : "text-neutral-400 hover:text-neutral-700"
-                    }`}
-                    {...backButtonProps}
-                  >
-                    {backButtonText}
-                  </button>
-                )}
-                {/* Optionally you can add a Next/Complete button here if needed */}
-              </div>
+              ></div>
             </div>
           )}
         </div>
@@ -318,7 +303,7 @@ function StepIndicator({
         variants={{
           inactive: { scale: 1, backgroundColor: "#222", color: "#a3a3a3" },
           active: { scale: 1, backgroundColor: "#aa873b", color: "#00d8ff" },
-          complete: { scale: 1, backgroundColor: "#00d8ff", color: "#3b82f6" },
+          complete: { scale: 1, backgroundColor: "#aa873b", color: "#3b82f6" },
         }}
         transition={{ duration: 0.3 }}
         className="flex h-8 w-8 items-center justify-center rounded-full font-semibold"
@@ -342,7 +327,7 @@ interface StepConnectorProps {
 function StepConnector({ isComplete }: StepConnectorProps) {
   const lineVariants: Variants = {
     incomplete: { width: 0, backgroundColor: "transparent" },
-    complete: { width: "100%", backgroundColor: "#00d8ff" },
+    complete: { width: "100%", backgroundColor: "#aa873b" },
   };
 
   return (
