@@ -1,5 +1,3 @@
-"use client";
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -29,41 +27,18 @@ const rawSchema = z.object({
     }),
 });
 
-const transformedSchema = rawSchema.transform(({ bookId }) => ({
-  bookId: Number(bookId),
-}));
-
-export const BookForm = () => {
-  const router = useRouter();
+export const BookForm = ({ bookId }: { bookId: string }) => {
   const form = useForm<z.infer<typeof rawSchema>>({
     resolver: zodResolver(rawSchema),
     defaultValues: {
-      bookId: "",
+      bookId,
     },
   });
-
-  function onSubmit(values: z.infer<typeof transformedSchema>) {
-    router.push(`book/${values.bookId}/metadata`);
-  }
 
   return (
     <section>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit((data) => {
-            const result = transformedSchema.safeParse(data);
-            if (result.success) {
-              onSubmit(result.data);
-            } else {
-              result.error.issues.forEach((issue) => {
-                form.setError(issue.path[0] as "bookId", {
-                  message: issue.message,
-                });
-              });
-            }
-          })}
-          className="flex flex-col items-center gap-4"
-        >
+        <form className="flex flex-col items-center gap-4">
           <FormField
             control={form.control}
             name="bookId"
@@ -94,7 +69,9 @@ export const BookForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Check Book</Button>
+          <Button type="submit" disabled>
+            Check Book
+          </Button>
         </form>
       </Form>
     </section>
