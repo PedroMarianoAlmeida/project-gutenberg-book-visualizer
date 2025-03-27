@@ -1,8 +1,7 @@
-"use server"
 import { generateObject } from "ai";
 import { z } from "zod";
 
-import { google } from '@ai-sdk/google';
+import { google } from "@ai-sdk/google";
 import { asyncWrapper } from "@/utils/asyncWrapper";
 
 export const graphAiSchema = z

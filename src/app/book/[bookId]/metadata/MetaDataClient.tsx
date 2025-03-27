@@ -7,6 +7,8 @@ import DecryptedText from "@/components/react-bits/DecryptedText";
 
 import { Button } from "@/components/ui/button";
 
+import { BookForm } from "@/components/StaticBookForm";
+
 interface MetaDataClientProps {
   bookId: number;
   bookTitle: string;
@@ -29,7 +31,7 @@ export const MetaDataClient = ({
     <main>
       <Stepper initialStep={1} disableStepIndicators ref={stepperRef}>
         <Step>
-          <></>
+          <BookForm bookId={String(bookId)} />
         </Step>
         <Step>
           <div className="flex flex-col gap-4 items-center">
