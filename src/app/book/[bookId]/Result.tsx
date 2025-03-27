@@ -1,16 +1,21 @@
 "use client";
-import ForceGraph2D, { NodeObject } from "react-force-graph-2d";
+import dynamic from "next/dynamic";
 import { z } from "zod";
 
 import { graphAiSchema } from "@/services/aiServices";
 import { calculateCharacterImportance } from "@/app/book/[bookId]/graphDataSanitize";
 
-type CustomNode = NodeObject & {
+const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
+  ssr: false,
+});
+
+type CustomNode = {
   id: string;
   x: number;
   y: number;
   __bckgDimensions?: [number, number];
-};
+} & import("react-force-graph-2d").NodeObject;
+
 type GraphData = z.infer<typeof graphAiSchema>;
 
 export const Result = ({ graphData }: { graphData: GraphData }) => {
