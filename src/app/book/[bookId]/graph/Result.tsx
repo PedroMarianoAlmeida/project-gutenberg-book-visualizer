@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { z } from "zod";
 
 import { graphAiSchema } from "@/services/aiServices";
-import { calculateCharacterImportance } from "@/app/book/[bookId]/graphDataSanitize";
+import { calculateCharacterImportance } from "@/app/book/[bookId]/graph/graphDataSanitize";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,

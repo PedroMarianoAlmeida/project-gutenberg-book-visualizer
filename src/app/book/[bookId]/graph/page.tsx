@@ -1,6 +1,6 @@
 import { getBookText } from "@/services/gutenbergService";
 import { createGraphData } from "@/services/aiServices";
-import mockData from "@/app/book/[bookId]/graphDataSample.json";
+import mockData from "./graphDataSample.json";
 import { Result } from "./Result";
 
 export const BookPage = async ({
