@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { graphAiSchema } from "@/services/aiServices";
+import { graphAiSchema } from "@/services/aiService";
 
 type GraphData = z.infer<typeof graphAiSchema>;
 

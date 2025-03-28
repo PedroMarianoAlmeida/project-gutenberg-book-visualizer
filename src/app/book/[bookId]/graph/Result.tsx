@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { z } from "zod";
 import { useWindowSize } from "@uidotdev/usehooks";
 
-import { graphAiSchema } from "@/services/aiServices";
+import { graphAiSchema } from "@/services/aiService";
 import { calculateCharacterImportance } from "@/app/book/[bookId]/graph/graphDataSanitize";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
