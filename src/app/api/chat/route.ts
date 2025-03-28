@@ -17,5 +17,5 @@ export async function POST(req: Request) {
     system: `You are a helpfull assistent that will answer questions about this book: ${bookContent.result}`,
     messages,
   });
-  return result.toDataStreamResponse();
+  return result.toDataStreamResponse({ sendUsage: false });
 }
