@@ -257,6 +257,11 @@ function StepIndicator({
     }
   };
 
+  const statusClasses = {
+    inactive: "bg-primary-foreground text-primary",
+    active: "bg-[#aa873b] text-[#aa873b]",
+    complete: "bg-[#aa873b] text-[#aa873b]",
+  };
   return (
     <motion.div
       onClick={handleClick}
@@ -268,17 +273,19 @@ function StepIndicator({
     >
       <motion.div
         variants={{
-          inactive: { scale: 1, backgroundColor: "#222", color: "#a3a3a3" },
-          active: { scale: 1, backgroundColor: "#aa873b", color: "#00d8ff" },
-          complete: { scale: 1, backgroundColor: "#aa873b", color: "#3b82f6" },
+          inactive: {
+            scale: 1,
+          },
+          active: { scale: 1, backgroundColor: "#aa873b", color: "#aa873b" },
+          complete: { scale: 1, backgroundColor: "#aa873b", color: "#aa873b" },
         }}
         transition={{ duration: 0.3 }}
-        className="flex h-8 w-8 items-center justify-center rounded-full font-semibold"
+        className={`flex h-8 w-8 items-center justify-center rounded-full font-semibold ${statusClasses[status]}`}
       >
         {status === "complete" ? (
           <CheckIcon className="h-4 w-4 text-black" />
         ) : status === "active" ? (
-          <div className="h-3 w-3 rounded-full bg-[#060606]" />
+          <div className="h-3 w-3 rounded-full bg-primary-foreground" />
         ) : (
           <span className="text-sm">{step}</span>
         )}
@@ -298,7 +305,7 @@ function StepConnector({ isComplete }: StepConnectorProps) {
   };
 
   return (
-    <div className="relative mx-2 h-0.5 flex-1 overflow-hidden rounded bg-neutral-600">
+    <div className="relative mx-2 h-0.5 flex-1 overflow-hidden rounded bg-secondary-foreground">
       <motion.div
         className="absolute left-0 top-0 h-full"
         variants={lineVariants}
