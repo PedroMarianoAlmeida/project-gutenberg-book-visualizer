@@ -33,7 +33,8 @@ const transformedSchema = rawSchema.transform(({ bookId }) => ({
   bookId: Number(bookId),
 }));
 
-export const BookForm = () => {
+export const BookForm = ({ ids }: { ids: string[] | null }) => {
+  console.log({ ids });
   const router = useRouter();
   const form = useForm<z.infer<typeof rawSchema>>({
     resolver: zodResolver(rawSchema),

@@ -1,6 +1,5 @@
 import { getBookMetadata } from "@/services/gutenbergService";
 import { MetaDataClient } from "./MetaDataClient";
-import { getBookIdsAlreadyRegistered } from "@/services/dbService";
 
 export default async function Page({
   params,
@@ -9,9 +8,6 @@ export default async function Page({
 }) {
   const { bookId } = await params;
   const bookMetadata = await getBookMetadata(Number(bookId));
-  const myTest = await getBookIdsAlreadyRegistered();
-
-  console.log({ myTest });
 
   if (!bookMetadata.success) {
     return (
