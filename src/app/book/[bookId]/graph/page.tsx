@@ -80,10 +80,10 @@ export default async function Page({
 
   return (
     <main className="p-4 w-full">
-      <h1 className="text-center text-xl w-full">{bookTitle}</h1>
+      <h1 className="text-center text-xl w-full mt-18 md:mt-12">{bookTitle}</h1>
       <Link
         href="/"
-        className="absolute bottom-4 left-4 p-2 rounded-full bg-background/80 backdrop-blur-sm shadow-sm hover:bg-background transition-colors duration-200 z-10"
+        className="fixed bottom-4 left-4 p-2 rounded-full bg-background/80 backdrop-blur-sm shadow-sm hover:bg-background transition-colors duration-200 z-10"
         aria-label="Go back to home page"
       >
         <Home className="h-5 w-5" />

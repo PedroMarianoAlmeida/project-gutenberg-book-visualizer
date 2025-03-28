@@ -16,7 +16,7 @@ import { Chat } from "./Chat";
 export const ChatCTA = ({ bookId }: { bookId: string }) => {
   return (
     <Dialog>
-      <DialogTrigger className="absolute bottom-4 right-4 cursor-pointer">
+      <DialogTrigger className="fixed bottom-4 right-4 cursor-pointer">
         <motion.div
           animate={{
             x: [0, -5, 5, -5, 5, 0],

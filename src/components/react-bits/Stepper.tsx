@@ -75,7 +75,7 @@ const Stepper = forwardRef<StepperHandle, StepperProps>(
 
     return (
       <div
-        className="flex min-h-full flex-1 flex-col items-center justify-center p-4 sm:aspect-[4/3] md:aspect-[2/1]"
+        className="flex flex-col items-center justify-center p-4 w-3xl"
         {...rest}
       >
         <div
@@ -258,7 +258,7 @@ function StepIndicator({
   };
 
   const statusClasses = {
-    inactive: "bg-primary-foreground text-primary",
+    inactive: "bg-primary text-primary-foreground",
     active: "bg-[#aa873b] text-[#aa873b]",
     complete: "bg-[#aa873b] text-[#aa873b]",
   };

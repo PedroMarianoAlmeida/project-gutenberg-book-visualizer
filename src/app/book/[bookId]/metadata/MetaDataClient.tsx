@@ -17,7 +17,7 @@ export const MetaDataClient = ({
   bookTitle,
 }: MetaDataClientProps) => {
   return (
-    <main>
+    <main className="flex justify-center items-center h-screen">
       <Stepper initialStep={2} disableStepIndicators>
         <Step>
           <></>
