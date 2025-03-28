@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Ellipsis, UserRound } from "lucide-react";
 
 const messageParsed = (message: string) => {
   const lines = message.split("\n");
@@ -86,19 +87,12 @@ export const Chat = ({ bookId }: { bookId: string }) => {
                     >
                       <Avatar className="h-8 w-8">
                         {message.role === "assistant" ? (
-                          <AvatarImage
-                            src="/placeholder.svg?height=32&width=32"
-                            alt="AI"
-                          />
+                          <AvatarFallback>🤖</AvatarFallback>
                         ) : (
-                          <AvatarImage
-                            src="/placeholder.svg?height=32&width=32"
-                            alt="User"
-                          />
+                          <AvatarFallback>
+                            <UserRound />
+                          </AvatarFallback>
                         )}
-                        <AvatarFallback>
-                          {message.role === "user" ? "U" : "AI"}
-                        </AvatarFallback>
                       </Avatar>
 
                       <div
@@ -125,13 +119,9 @@ export const Chat = ({ bookId }: { bookId: string }) => {
               })}
               {(error || status === "submitted" || status === "streaming") && (
                 <div className="flex justify-start">
-                  <div className="flex gap-3 max-w-[80%] flex-row">
+                  <div className="flex gap-3 max-w-[80%] flex-row items-center">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src="/placeholder.svg?height=32&width=32"
-                        alt="AI"
-                      />
-                      <AvatarFallback>AI</AvatarFallback>
+                      <AvatarFallback>🤖</AvatarFallback>
                     </Avatar>
 
                     <div className="rounded-lg p-3 whitespace-pre-line bg-muted">
@@ -149,7 +139,7 @@ export const Chat = ({ bookId }: { bookId: string }) => {
                       )}
 
                       {(status === "submitted" || status === "streaming") && (
-                        <div>{status === "submitted" && <p>Loading...</p>}</div>
+                        <div>{status === "submitted" && <Ellipsis />}</div>
                       )}
                     </div>
                   </div>
