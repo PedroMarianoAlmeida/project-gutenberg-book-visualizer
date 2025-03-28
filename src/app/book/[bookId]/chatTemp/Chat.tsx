@@ -19,7 +19,7 @@ const messageParsed = (message: string) => {
   if (errorLine)
     return {
       isValid: false,
-      content: errorLine.slice(2).replace(/[^\w\s.,!?'"-]/g, ""),
+      content: errorLine.slice(2).replace(/[^\w\s.,!?'-]/g, ""),
     };
 
   const rawParts = lines
@@ -78,7 +78,7 @@ export const Chat = ({ bookId }: { bookId: string }) => {
                     }`}
                   >
                     <div
-                      className={`flex gap-3 max-w-[80%] ${
+                      className={`flex gap-3 max-w-[80%] items-center ${
                         message.role === "user"
                           ? "flex-row-reverse"
                           : "flex-row"
@@ -102,7 +102,7 @@ export const Chat = ({ bookId }: { bookId: string }) => {
                       </Avatar>
 
                       <div
-                        className={`rounded-lg p-3 whitespace-pre-line flex gap-2 ${
+                        className={`rounded-lg p-3 whitespace-pre-line flex gap-2 items-center ${
                           message.role === "user"
                             ? "bg-primary text-primary-foreground"
                             : "bg-muted"
