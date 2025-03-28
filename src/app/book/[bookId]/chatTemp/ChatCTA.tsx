@@ -9,6 +9,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTrigger,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Chat } from "./Chat";
 
@@ -30,7 +31,8 @@ export const ChatCTA = ({ bookId }: { bookId: string }) => {
           <MessageCircle size={60} />
         </motion.div>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="bg-transparent shadow-none border-none p-0">
+        <DialogTitle className="hidden"></DialogTitle>
         <DialogHeader>
           <DialogDescription>
             <Chat bookId={bookId} />
