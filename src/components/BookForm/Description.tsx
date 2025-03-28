@@ -1,5 +1,6 @@
+import { useState } from "react";
 import Link from "next/link";
-import { Info } from "lucide-react";
+import { Info, Loader2 } from "lucide-react";
 
 import {
   Dialog,
@@ -16,21 +17,35 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 import { MaybeBookIds } from "@/app/HomePageClient";
 
 const Note = ({ ids }: { ids: string[] }) => {
+  const [loading, setLoading] = useState(false);
+
   return (
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="item-1">
-        <AccordionTrigger>
-          Or check a book that a previous user already create the Graph
+        <AccordionTrigger className="border-0 focus-visible:border-0 focus-visible:ring-0">
+          Or check a book that a previous user already create the Graph{" "}
+          {loading && <Loader2 className="animate-spin" />}
         </AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-wrap gap-2">
             {ids.map((id) => (
-              <Link href={`/book/${id}/metadata`} key={id}>
-                <Badge>{id}</Badge>
+              <Link
+                href={`/book/${id}/metadata`}
+                key={id}
+                className={loading ? "pointer-events-none" : ""}
+              >
+                <Button
+                  className="rounded-3xl h-5 w-4 cursor-pointer"
+                  onClick={() => setLoading(true)}
+                  disabled={loading}
+                >
+                  {id}
+                </Button>
               </Link>
             ))}
           </div>
