@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 
 import { useWindowSize } from "@uidotdev/usehooks";
 import { Switch } from "@/components/ui/switch";
@@ -53,11 +54,19 @@ export const Result = ({ graphData }: { graphData: GraphData }) => {
 
   return (
     <div className="flex justify-center items-center">
-      <Switch
-        id="airplane-mode"
-        className="absolute top-4 right-4 z-20"
-        onClick={() => setIs2d((curr) => !curr)}
-      />
+      <div className="absolute top-4 right-4 z-20 flex gap-3 items-center">
+        <p className="text-[20px] font-bold mb-1 text-[#cc9933]">
+          2D
+        </p>
+        <Switch id="airplane-mode" onClick={() => setIs2d((curr) => !curr)} />
+        <Image
+          src="/3D.png"
+          height={30}
+          width={30}
+          alt="3d"
+        />
+      </div>
+
       {is2D ? (
         <ForceGraph2D
           height={height ?? 500}
