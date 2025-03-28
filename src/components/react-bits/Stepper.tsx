@@ -258,7 +258,7 @@ function StepIndicator({
   };
 
   const statusClasses = {
-    inactive: "bg-primary-foreground text-primary",
+    inactive: "bg-primary text-primary-foreground",
     active: "bg-[#aa873b] text-[#aa873b]",
     complete: "bg-[#aa873b] text-[#aa873b]",
   };
