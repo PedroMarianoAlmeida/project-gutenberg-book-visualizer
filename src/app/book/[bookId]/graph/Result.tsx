@@ -57,6 +57,7 @@ export const Result = ({ graphData }: { graphData: GraphData }) => {
         linkColor={() => (isSystemDark ? "#d9eaef" : "black")}
         linkLabel={(link) => link.relation}
         linkWidth={1}
+        nodeLabel={(node) => String(node.id)}
       />
       {/* <ForceGraph2D
         height={height ?? 500}
