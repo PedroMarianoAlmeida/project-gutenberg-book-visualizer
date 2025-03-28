@@ -5,11 +5,10 @@ const tangerine = Tangerine({ weight: "700", subsets: ["latin"] });
 
 export const Logo = () => {
   return (
-    <Link
-      className={`${tangerine.className} absolute text-4xl z-10 w-full text-center`}
-      href="/"
-    >
-      <div className="p-4">Project Gutenberg Helper</div>
-    </Link>
+    <div className="p-4 absolute text-4xl z-10 w-full text-center">
+      <Link href="/" className={tangerine.className}>
+        Project Gutenberg Helper
+      </Link>
+    </div>
   );
 };
