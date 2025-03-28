@@ -21,7 +21,7 @@ export default function Loading() {
     <main>
       <Stepper initialStep={1} disableStepIndicators ref={stepperRef}>
         <Step>
-          <BookForm bookId={"???"} />
+          <BookForm bookId={"999"} />
         </Step>
         <Step>
           <div className="flex flex-col gap-4 items-center">
