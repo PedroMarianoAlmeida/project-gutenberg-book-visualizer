@@ -8,6 +8,7 @@ import { createGraphData } from "@/services/aiServices";
 // import mockData from "./graphDataSample.json";
 import { Result } from "./Result";
 import { Error } from "./Error";
+import { ChatCTA } from "./ChatCTA";
 
 export default async function Page({
   params,
@@ -60,6 +61,7 @@ export default async function Page({
         <Home className="h-5 w-5" />
       </Link>
       <Result graphData={graphData.result.bokGraphData} />
+      <ChatCTA bookId={bookId} />
       {/* <Result graphData={mockData} /> */}
     </main>
   );
