@@ -2,7 +2,10 @@
 import { BookForm } from "@/components/BookForm/BookForm";
 import Stepper, { Step } from "@/components/react-bits/Stepper";
 
-export const HomePageClient = ({ ids }: { ids: string[] | null }) => {
+export interface MaybeBookIds {
+  ids: string[] | null;
+}
+export const HomePageClient = ({ ids }: MaybeBookIds) => {
   return (
     <main>
       <Stepper initialStep={1} disableStepIndicators>

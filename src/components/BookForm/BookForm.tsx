@@ -3,7 +3,6 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { ExternalLink } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +15,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { MaybeBookIds } from "@/app/HomePageClient";
+import { Description } from "./Description";
 
 const rawSchema = z.object({
   bookId: z
@@ -33,7 +34,7 @@ const transformedSchema = rawSchema.transform(({ bookId }) => ({
   bookId: Number(bookId),
 }));
 
-export const BookForm = ({ ids }: { ids: string[] | null }) => {
+export const BookForm = ({ ids }: MaybeBookIds) => {
   console.log({ ids });
   const router = useRouter();
   const form = useForm<z.infer<typeof rawSchema>>({
@@ -80,16 +81,7 @@ export const BookForm = ({ ids }: { ids: string[] | null }) => {
                   />
                 </FormControl>
                 <FormDescription className="flex gap-1 items-center justify-center">
-                  <span>Book id from</span>
-                  <a
-                    href="https://www.gutenberg.org/"
-                    className="hover:underline flex items-center gap-1 font-bold"
-                    target="__blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span>Project Gutenberg</span>
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
+                  <Description ids={ids} />
                 </FormDescription>
                 <FormMessage />
               </FormItem>
