@@ -1,7 +1,6 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -15,8 +14,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const messageParsed = (message: string) => {
-  const rawParts = message
-    .split("\n")
+  const lines = message.split("\n");
+  const errorLine = lines.find((line) => line.startsWith("3:"));
+  if (errorLine)
+    return {
+      isValid: false,
+      content: errorLine.slice(2).replace(/[^\w\s.,!?'"-]/g, ""),
+    };
+
+  const rawParts = lines
     .filter((line) => line.startsWith("0:"))
     .map((line) => line.slice(2)); // remove '0:'
 
@@ -24,12 +30,12 @@ const messageParsed = (message: string) => {
     try {
       return JSON.parse(part);
     } catch {
-      return "";
+      return { isValid: false, content: "Error parsing the response" };
     }
   });
   const fullText = parsedParts.join("");
   const cleanText = fullText.replace(/[^\w\s.,!?'"-]/g, "");
-  return cleanText;
+  return { isValid: true, content: cleanText };
 };
 
 export const Chat = ({ bookId }: { bookId: string }) => {
@@ -47,34 +53,9 @@ export const Chat = ({ bookId }: { bookId: string }) => {
     },
     streamProtocol: "text",
   });
-
+  console.log({ status, error, content: messages });
   return (
     <>
-      {messages.map((message) => (
-        <div key={message.id}>
-          {message.role === "user" ? "User: " : "AI: "}
-          {message.content}
-        </div>
-      ))}
-
-      {error && (
-        <>
-          <div>An error occurred.</div>
-          <button type="button" onClick={() => reload()}>
-            Retry
-          </button>
-        </>
-      )}
-
-      {(status === "submitted" || status === "streaming") && (
-        <div>
-          {status === "submitted" && <p>Loading...</p>}
-          <button type="button" onClick={() => stop()}>
-            Stop
-          </button>
-        </div>
-      )}
-
       <Card className="w-full max-w-3xl h-[80vh]">
         <CardHeader className="border-b">
           <CardTitle className="text-xl">Chat</CardTitle>
@@ -84,10 +65,9 @@ export const Chat = ({ bookId }: { bookId: string }) => {
           <CardContent className="p-4">
             <div className="space-y-4">
               {messages.map((message) => {
-                console.log({ message });
-                const plainTextMessage =
+                const messageTreated =
                   message.role === "user"
-                    ? message.content
+                    ? { isValid: true, content: message.content }
                     : messageParsed(message.content);
 
                 return (
@@ -122,18 +102,59 @@ export const Chat = ({ bookId }: { bookId: string }) => {
                       </Avatar>
 
                       <div
-                        className={`rounded-lg p-3 whitespace-pre-line ${
+                        className={`rounded-lg p-3 whitespace-pre-line flex gap-2 ${
                           message.role === "user"
                             ? "bg-primary text-primary-foreground"
                             : "bg-muted"
-                        }`}
+                        } ${messageTreated.isValid ? "" : "text-destructive"}`}
                       >
-                        {plainTextMessage}
+                        {messageTreated.content}
+                        {!messageTreated.isValid && (
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            onClick={() => reload()}
+                          >
+                            Retry
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
                 );
               })}
+              {(error || status === "submitted" || status === "streaming") && (
+                <div className="flex justify-start">
+                  <div className="flex gap-3 max-w-[80%] flex-row">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage
+                        src="/placeholder.svg?height=32&width=32"
+                        alt="AI"
+                      />
+                      <AvatarFallback>AI</AvatarFallback>
+                    </Avatar>
+
+                    <div className="rounded-lg p-3 whitespace-pre-line bg-muted">
+                      {error && (
+                        <div className="flex gap-2">
+                          <div>An error occurred.</div>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            onClick={() => reload()}
+                          >
+                            Retry
+                          </Button>
+                        </div>
+                      )}
+
+                      {(status === "submitted" || status === "streaming") && (
+                        <div>{status === "submitted" && <p>Loading...</p>}</div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </ScrollArea>
