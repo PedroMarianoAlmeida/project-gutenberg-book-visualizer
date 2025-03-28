@@ -7,7 +7,7 @@ export interface MaybeBookIds {
 }
 export const HomePageClient = ({ ids }: MaybeBookIds) => {
   return (
-    <main>
+    <main className="flex justify-center items-center h-screen">
       <Stepper initialStep={1} disableStepIndicators>
         <Step>
           <h2 className="text-center mb-4 text-xl">Start adding a book! 📖</h2>
