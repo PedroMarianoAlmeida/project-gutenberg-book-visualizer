@@ -1,4 +1,10 @@
-import { generateObject, streamText, type CoreMessage, generateText } from "ai";
+import {
+  generateObject,
+  streamText,
+  type CoreMessage,
+  generateText,
+  type GenerateObjectResult,
+} from "ai";
 import { z } from "zod";
 
 import { getBookText } from "@/services/gutenbergService";
@@ -47,7 +53,8 @@ export const createGraphData = async (bookText: string) => {
 
     const results = await Promise.allSettled(chunkPromises);
     const fulfilled = results.filter(
-      (r): r is PromiseFulfilledResult<any> => r.status === "fulfilled"
+      (r): r is PromiseFulfilledResult<GenerateObjectResult<GraphData>> =>
+        r.status === "fulfilled"
     );
 
     if (fulfilled.length === 0) {
@@ -105,7 +112,7 @@ export const chatAboutTheBook = async ({
 
     // Get static responses for each chunk using generateText
     const chunkResponses = await Promise.allSettled(
-      chunks.map((chunk, index) =>
+      chunks.map((chunk) =>
         generateText({
           model: google("gemini-2.0-flash-001"),
           system: `You are a helpful assistant. Based on the following part of a book, answer the user's questions.`,
@@ -121,7 +128,6 @@ export const chatAboutTheBook = async ({
       .map((res, i) => `Chunk ${i + 1} answer:\n${res.value.text}`);
 
     const compiledSummary = validAnswers.join("\n\n");
-    console.log({ compiledSummary });
     // Final streamed response using the compiled summaries and user messages
     return streamText({
       model: google("gemini-2.0-flash-001"),

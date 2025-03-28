@@ -48,12 +48,20 @@ export const MetaDataClient = ({
             </ul>
             <div className="flex flex-col gap-4">
               <Link href={`/book/${bookId}/graph`}>
-                <Button variant="outline" disabled={loading}>
+                <Button
+                  variant="outline"
+                  disabled={loading}
+                  onClick={() => setLoading(true)}
+                >
                   Yes, create my Graph
                 </Button>
               </Link>
               <Link href="/">
-                <Button variant="destructive" disabled={loading}>
+                <Button
+                  variant="destructive"
+                  disabled={loading}
+                  onClick={() => setLoading(true)}
+                >
                   No, I will add another Id
                 </Button>
               </Link>
