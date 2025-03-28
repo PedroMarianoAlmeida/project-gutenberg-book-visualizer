@@ -1,5 +1,5 @@
 import { google } from "@ai-sdk/google";
-import { streamText } from "ai";
+import { generateText } from "ai";
 
 import { getBookText } from "@/services/gutenbergService";
 
@@ -13,11 +13,11 @@ export async function POST(req: Request) {
   if (!bookContent.success) return;
   console.log({ bookContent });
 
-  const result = streamText({
-    model: google("gemini-2.0-flash-001"),
+  const result = generateText({
+    model: google("gemini-2.5-pro-exp-03-25"),
     system: `You are a helpfull assistent that will answer questions about this book: ${bookContent.result}`,
     messages,
   });
 
-  return result.toDataStreamResponse();
+  return (await result).text;
 }
