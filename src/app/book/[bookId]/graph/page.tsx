@@ -73,7 +73,7 @@ export default async function Page({
     const aiGraphData = await createGraphData(bookTextResult.value.result);
     if (!aiGraphData.success) return <Error message="Error creating graph" />;
     graphData = aiGraphData.result.bokGraphData;
-    saveGraphFromDatabase({
+    await saveGraphFromDatabase({
       bookGraph: graphData,
       bookId: bookIdNumber,
     });

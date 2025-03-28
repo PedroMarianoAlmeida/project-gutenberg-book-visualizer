@@ -35,7 +35,6 @@ const transformedSchema = rawSchema.transform(({ bookId }) => ({
 }));
 
 export const BookForm = ({ ids }: MaybeBookIds) => {
-  console.log({ ids });
   const router = useRouter();
   const form = useForm<z.infer<typeof rawSchema>>({
     resolver: zodResolver(rawSchema),

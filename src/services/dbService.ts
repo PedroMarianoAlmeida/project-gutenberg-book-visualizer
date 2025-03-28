@@ -37,7 +37,6 @@ export const getGraphFromDatabase = (bookId: number) => {
     const docRef = doc(database, "graphs", String(bookId));
     const docSnap = await getDoc(docRef);
     if (!docSnap.exists()) throw new Error("Document not founded");
-    console.log({ data: docSnap.data() });
     const data = docSnap.data() as GraphData;
     const bokGraphData = graphAiSchema.parse(data as unknown) as GraphData;
     return { bokGraphData };
@@ -58,9 +57,9 @@ export const saveGraphFromDatabase = ({
     const metaDocRef = doc(database, "project-meta", "books-registered");
 
     await runTransaction(database, async (transaction) => {
-      transaction.set(graphDocRef, bookGraph);
-
       const metaDocSnap = await transaction.get(metaDocRef);
+
+      transaction.set(graphDocRef, bookGraph);
 
       if (!metaDocSnap.exists()) {
         transaction.set(metaDocRef, {

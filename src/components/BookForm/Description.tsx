@@ -28,11 +28,13 @@ const Note = ({ ids }: { ids: string[] }) => {
           Or check a book that a previous user already create the Graph
         </AccordionTrigger>
         <AccordionContent>
+          <div className="flex flex-wrap gap-2">
           {ids.map((id) => (
             <Link href={`/book/${id}/metadata`} key={id}>
               <Badge>{id}</Badge>
             </Link>
           ))}
+          </div>
         </AccordionContent>
       </AccordionItem>
     </Accordion>
