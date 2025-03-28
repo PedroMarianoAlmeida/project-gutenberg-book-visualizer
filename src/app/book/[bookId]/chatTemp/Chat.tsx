@@ -14,6 +14,15 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+const messageParsed = (message: string) => {
+  const res = message
+    .split("\n")
+    .filter((line) => line.startsWith("0:"))
+    .map((line) => line.replace(/^0:"/, "").replace(/"$/, ""))
+    .join("");
+  return res;
+};
+
 export const Chat = ({ bookId }: { bookId: string }) => {
   const {
     messages,
@@ -67,11 +76,10 @@ export const Chat = ({ bookId }: { bookId: string }) => {
             <div className="space-y-4">
               {messages.map((message) => {
                 console.log({ message });
-                const messageParsed = message.content
-                  .split("\n")
-                  .filter((line) => line.startsWith("0:"))
-                  .map((line) => line.replace(/^0:"/, "").replace(/"$/, ""))
-                  .join("");
+                const plainTextMessage =
+                  message.role === "user"
+                    ? message.content
+                    : messageParsed(message.content);
 
                 return (
                   <div
@@ -111,7 +119,7 @@ export const Chat = ({ bookId }: { bookId: string }) => {
                             : "bg-muted"
                         }`}
                       >
-                        {messageParsed}
+                        {plainTextMessage}
                       </div>
                     </div>
                   </div>
