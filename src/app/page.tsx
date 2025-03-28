@@ -1,22 +1,8 @@
-"use client";
-import { BookForm } from "@/components/BookForm";
-import Stepper, { Step } from "@/components/react-bits/Stepper";
+import { HomePageClient } from "./HomePageClient";
+import { getBookIdsAlreadyRegistered } from "@/services/dbService";
 
-export default function Home() {
-  return (
-    <main>
-      <Stepper initialStep={1} disableStepIndicators>
-        <Step>
-          <h2 className="text-center mb-4 text-xl">Start adding a book! 📖</h2>
-          <BookForm />
-        </Step>
-        <Step>
-          <></>
-        </Step>
-        <Step>
-          <></>
-        </Step>
-      </Stepper>
-    </main>
-  );
+export default async function Home() {
+  const bookIds = await getBookIdsAlreadyRegistered();
+
+  return <HomePageClient ids={bookIds.success ? bookIds.result.ids : null} />;
 }

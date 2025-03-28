@@ -1,9 +1,10 @@
 "use client";
+import { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
-import { z } from "zod";
+
 import { useWindowSize } from "@uidotdev/usehooks";
 
-import { graphAiSchema } from "@/services/aiServices";
+import { GraphData } from "@/services/aiService";
 import { calculateCharacterImportance } from "@/app/book/[bookId]/graph/graphDataSanitize";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -17,21 +18,39 @@ type CustomNode = {
   __bckgDimensions?: [number, number];
 } & import("react-force-graph-2d").NodeObject;
 
-type GraphData = z.infer<typeof graphAiSchema>;
-
 export const Result = ({ graphData }: { graphData: GraphData }) => {
+  const [isSystemDark, setIsSystemDark] = useState(false);
   const { height, width } = useWindowSize();
   const characterImportance = calculateCharacterImportance(graphData);
-  const isSystemDark = window.matchMedia(
-    "(prefers-color-scheme: dark)"
-  ).matches;
+
+    // Sanitize graphData by filtering out links with missing nodes.
+    const filteredGraphData = useMemo(() => {
+      // Create a set of valid node ids.
+      const validNodeIds = new Set(graphData.nodes.map((node) => node.id));
+      // Filter links to only include those where both source and target exist.
+      const validLinks = graphData.links.filter(
+        (link) =>
+          validNodeIds.has(link.source as string) &&
+          validNodeIds.has(link.target as string)
+      );
+      return { ...graphData, links: validLinks };
+    }, [graphData]);
+
+  useEffect(() => {
+    // This code runs only on the client side.
+    if (typeof window !== "undefined") {
+      setIsSystemDark(
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      );
+    }
+  }, []);
 
   return (
     <div className="flex justify-center items-center">
       <ForceGraph2D
         height={height ?? 500}
         width={width ?? 500}
-        graphData={graphData}
+        graphData={filteredGraphData}
         linkColor={() => (isSystemDark ? "#d9eaef" : "black")}
         linkLabel={(link) => link.relation}
         nodeCanvasObject={(node, ctx, globalScale) => {

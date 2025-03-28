@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { ExternalLink } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { Description } from "./Description";
+
 const rawSchema = z.object({
   bookId: z
     .string()
@@ -27,11 +28,11 @@ const rawSchema = z.object({
     }),
 });
 
-export const BookForm = ({ bookId }: { bookId: string }) => {
+export const BookForm = () => {
   const form = useForm<z.infer<typeof rawSchema>>({
     resolver: zodResolver(rawSchema),
     defaultValues: {
-      bookId,
+      bookId: "999",
     },
   });
 
@@ -54,16 +55,7 @@ export const BookForm = ({ bookId }: { bookId: string }) => {
                   />
                 </FormControl>
                 <FormDescription className="flex gap-1 items-center justify-center">
-                  <span>Book id from</span>
-                  <a
-                    href="https://www.gutenberg.org/"
-                    className="hover:underline flex items-center gap-1 font-bold"
-                    target="__blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span>Project Gutenberg</span>
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
+                  <Description ids={null} />
                 </FormDescription>
                 <FormMessage />
               </FormItem>

@@ -6,7 +6,7 @@ import Stepper, { StepperHandle, Step } from "@/components/react-bits/Stepper";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { BookForm } from "@/components/StaticBookForm";
+import { BookForm } from "@/components/BookForm/StaticBookForm";
 
 export default function Loading() {
   const stepperRef = useRef<StepperHandle>(null);
@@ -21,7 +21,7 @@ export default function Loading() {
     <main>
       <Stepper initialStep={1} disableStepIndicators ref={stepperRef}>
         <Step>
-          <BookForm bookId={"???"} />
+          <BookForm />
         </Step>
         <Step>
           <div className="flex flex-col gap-4 items-center">
