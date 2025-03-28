@@ -1,13 +1,19 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 
 import { useWindowSize } from "@uidotdev/usehooks";
+import { Switch } from "@/components/ui/switch";
 
 import { GraphData } from "@/services/aiService";
 import { calculateCharacterImportance } from "@/app/book/[bookId]/graph/graphDataSanitize";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
+  ssr: false,
+});
+
+const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
   ssr: false,
 });
 
@@ -20,21 +26,22 @@ type CustomNode = {
 
 export const Result = ({ graphData }: { graphData: GraphData }) => {
   const [isSystemDark, setIsSystemDark] = useState(false);
+  const [is2D, setIs2d] = useState(true);
   const { height, width } = useWindowSize();
   const characterImportance = calculateCharacterImportance(graphData);
 
-    // Sanitize graphData by filtering out links with missing nodes.
-    const filteredGraphData = useMemo(() => {
-      // Create a set of valid node ids.
-      const validNodeIds = new Set(graphData.nodes.map((node) => node.id));
-      // Filter links to only include those where both source and target exist.
-      const validLinks = graphData.links.filter(
-        (link) =>
-          validNodeIds.has(link.source as string) &&
-          validNodeIds.has(link.target as string)
-      );
-      return { ...graphData, links: validLinks };
-    }, [graphData]);
+  // Sanitize graphData by filtering out links with missing nodes.
+  const filteredGraphData = useMemo(() => {
+    // Create a set of valid node ids.
+    const validNodeIds = new Set(graphData.nodes.map((node) => node.id));
+    // Filter links to only include those where both source and target exist.
+    const validLinks = graphData.links.filter(
+      (link) =>
+        validNodeIds.has(link.source as string) &&
+        validNodeIds.has(link.target as string)
+    );
+    return { ...graphData, links: validLinks };
+  }, [graphData]);
 
   useEffect(() => {
     // This code runs only on the client side.
@@ -47,45 +54,69 @@ export const Result = ({ graphData }: { graphData: GraphData }) => {
 
   return (
     <div className="flex justify-center items-center">
-      <ForceGraph2D
-        height={height ?? 500}
-        width={width ?? 500}
-        graphData={filteredGraphData}
-        linkColor={() => (isSystemDark ? "#d9eaef" : "black")}
-        linkLabel={(link) => link.relation}
-        nodeCanvasObject={(node, ctx, globalScale) => {
-          const customNode = node as CustomNode;
-          const label = customNode.id;
+      <div className="absolute top-4 right-4 z-20 flex gap-3 items-center">
+        <p className="text-[20px] font-bold mb-1 text-[#cc9933]">
+          2D
+        </p>
+        <Switch id="airplane-mode" onClick={() => setIs2d((curr) => !curr)} />
+        <Image
+          src="/3D.png"
+          height={30}
+          width={30}
+          alt="3d"
+        />
+      </div>
 
-          const radius = characterImportance[customNode.id] ?? 5;
-          const fontSize = 15 / globalScale;
-          ctx.font = `${fontSize}px Sans-Serif`;
+      {is2D ? (
+        <ForceGraph2D
+          height={height ?? 500}
+          width={width ?? 500}
+          graphData={filteredGraphData}
+          linkColor={() => (isSystemDark ? "#d9eaef" : "black")}
+          linkLabel={(link) => link.relation}
+          nodeCanvasObject={(node, ctx, globalScale) => {
+            const customNode = node as CustomNode;
+            const label = customNode.id;
 
-          ctx.beginPath();
-          ctx.arc(customNode.x, customNode.y, radius, 0, 2 * Math.PI, false);
-          ctx.fillStyle = isSystemDark ? "#8a651f" : "#cc9933";
-          ctx.fill();
+            const radius = characterImportance[customNode.id] ?? 5;
+            const fontSize = 15 / globalScale;
+            ctx.font = `${fontSize}px Sans-Serif`;
 
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillStyle = isSystemDark ? "white" : "black";
-          ctx.fillText(label, customNode.x, customNode.y);
+            ctx.beginPath();
+            ctx.arc(customNode.x, customNode.y, radius, 0, 2 * Math.PI, false);
+            ctx.fillStyle = isSystemDark ? "#8a651f" : "#cc9933";
+            ctx.fill();
 
-          customNode.__bckgDimensions = [radius * 2, radius * 2];
-        }}
-        nodePointerAreaPaint={(node, color, ctx) => {
-          const customNode = node as CustomNode;
-          const bckgDimensions = customNode.__bckgDimensions;
-          if (bckgDimensions) {
-            ctx.fillStyle = color;
-            ctx.fillRect(
-              customNode.x - bckgDimensions[0] / 2,
-              customNode.y - bckgDimensions[1] / 2,
-              ...bckgDimensions
-            );
-          }
-        }}
-      />
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = isSystemDark ? "white" : "black";
+            ctx.fillText(label, customNode.x, customNode.y);
+
+            customNode.__bckgDimensions = [radius * 2, radius * 2];
+          }}
+          nodePointerAreaPaint={(node, color, ctx) => {
+            const customNode = node as CustomNode;
+            const bckgDimensions = customNode.__bckgDimensions;
+            if (bckgDimensions) {
+              ctx.fillStyle = color;
+              ctx.fillRect(
+                customNode.x - bckgDimensions[0] / 2,
+                customNode.y - bckgDimensions[1] / 2,
+                ...bckgDimensions
+              );
+            }
+          }}
+        />
+      ) : (
+        <ForceGraph3D
+          graphData={filteredGraphData}
+          backgroundColor={isSystemDark ? "black" : "white"}
+          linkColor={() => (isSystemDark ? "#d9eaef" : "black")}
+          linkLabel={(link) => link.relation}
+          linkWidth={1}
+          nodeLabel={(node) => String(node.id)}
+        />
+      )}
     </div>
   );
 };
