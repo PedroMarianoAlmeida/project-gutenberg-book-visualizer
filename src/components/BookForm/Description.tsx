@@ -29,11 +29,11 @@ const Note = ({ ids }: { ids: string[] }) => {
         </AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-wrap gap-2">
-          {ids.map((id) => (
-            <Link href={`/book/${id}/metadata`} key={id}>
-              <Badge>{id}</Badge>
-            </Link>
-          ))}
+            {ids.map((id) => (
+              <Link href={`/book/${id}/metadata`} key={id}>
+                <Badge>{id}</Badge>
+              </Link>
+            ))}
           </div>
         </AccordionContent>
       </AccordionItem>
@@ -60,10 +60,9 @@ export const Description = ({ ids }: MaybeBookIds) => {
                 href="https://www.gutenberg.org/"
                 target="__blank"
                 rel="noopener noreferrer"
+                className="font-bold hover:underline"
               >
-                <Button variant="link" className="p-1">
-                  Project Gutenberg
-                </Button>
+                Project Gutenberg
               </Link>{" "}
               official website to search books
               {ids && <Note ids={ids} />}
