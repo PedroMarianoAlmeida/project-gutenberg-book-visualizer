@@ -1,9 +1,9 @@
 "use client";
 import dynamic from "next/dynamic";
-import { z } from "zod";
+
 import { useWindowSize } from "@uidotdev/usehooks";
 
-import { graphAiSchema } from "@/services/aiService";
+import { GraphData } from "@/services/aiService";
 import { calculateCharacterImportance } from "@/app/book/[bookId]/graph/graphDataSanitize";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
@@ -16,8 +16,6 @@ type CustomNode = {
   y: number;
   __bckgDimensions?: [number, number];
 } & import("react-force-graph-2d").NodeObject;
-
-type GraphData = z.infer<typeof graphAiSchema>;
 
 export const Result = ({ graphData }: { graphData: GraphData }) => {
   const { height, width } = useWindowSize();

@@ -1,7 +1,4 @@
-import { z } from "zod";
-import { graphAiSchema } from "@/services/aiService";
-
-type GraphData = z.infer<typeof graphAiSchema>;
+import { GraphData } from "@/services/aiService";
 
 export const calculateCharacterImportance = (graphData: GraphData) => {
   // Compute raw importance counts for all nodes.

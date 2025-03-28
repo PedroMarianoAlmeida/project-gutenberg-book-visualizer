@@ -37,6 +37,8 @@ export const graphAiSchema = z
     });
   });
 
+export type GraphData = z.infer<typeof graphAiSchema>;
+
 export const createGraphData = async (bookText: string) => {
   return asyncWrapper(async () => {
     const res = await generateObject({
