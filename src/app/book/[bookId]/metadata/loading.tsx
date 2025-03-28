@@ -6,7 +6,7 @@ import Stepper, { StepperHandle, Step } from "@/components/react-bits/Stepper";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { BookForm } from "@/components/StaticBookForm";
+import { BookForm } from "@/components/BookForm/StaticBookForm";
 
 export default function Loading() {
   const stepperRef = useRef<StepperHandle>(null);
