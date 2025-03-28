@@ -1,6 +1,8 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
 import React from "react";
+import { Loader2 } from "lucide-react";
 
 import Stepper, { Step } from "@/components/react-bits/Stepper";
 
@@ -16,6 +18,8 @@ export const MetaDataClient = ({
   bookId,
   bookTitle,
 }: MetaDataClientProps) => {
+  const [loading, setLoading] = useState(false);
+
   return (
     <main className="flex justify-center items-center h-screen">
       <Stepper initialStep={2} disableStepIndicators>
@@ -44,11 +48,16 @@ export const MetaDataClient = ({
             </ul>
             <div className="flex flex-col gap-4">
               <Link href={`/book/${bookId}/graph`}>
-                <Button variant="outline">Yes, create my Graph</Button>
+                <Button variant="outline" disabled={loading}>
+                  Yes, create my Graph
+                </Button>
               </Link>
               <Link href="/">
-                <Button variant="destructive">No, I will add another Id</Button>
+                <Button variant="destructive" disabled={loading}>
+                  No, I will add another Id
+                </Button>
               </Link>
+              {loading && <Loader2 className="animate-spin" />}
             </div>
           </div>
         </Step>
