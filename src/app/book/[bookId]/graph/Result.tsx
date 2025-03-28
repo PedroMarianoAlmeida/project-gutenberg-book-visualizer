@@ -11,6 +11,10 @@ const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
 });
 
+const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
+  ssr: false,
+});
+
 type CustomNode = {
   id: string;
   x: number;
@@ -23,18 +27,18 @@ export const Result = ({ graphData }: { graphData: GraphData }) => {
   const { height, width } = useWindowSize();
   const characterImportance = calculateCharacterImportance(graphData);
 
-    // Sanitize graphData by filtering out links with missing nodes.
-    const filteredGraphData = useMemo(() => {
-      // Create a set of valid node ids.
-      const validNodeIds = new Set(graphData.nodes.map((node) => node.id));
-      // Filter links to only include those where both source and target exist.
-      const validLinks = graphData.links.filter(
-        (link) =>
-          validNodeIds.has(link.source as string) &&
-          validNodeIds.has(link.target as string)
-      );
-      return { ...graphData, links: validLinks };
-    }, [graphData]);
+  // Sanitize graphData by filtering out links with missing nodes.
+  const filteredGraphData = useMemo(() => {
+    // Create a set of valid node ids.
+    const validNodeIds = new Set(graphData.nodes.map((node) => node.id));
+    // Filter links to only include those where both source and target exist.
+    const validLinks = graphData.links.filter(
+      (link) =>
+        validNodeIds.has(link.source as string) &&
+        validNodeIds.has(link.target as string)
+    );
+    return { ...graphData, links: validLinks };
+  }, [graphData]);
 
   useEffect(() => {
     // This code runs only on the client side.
@@ -47,7 +51,8 @@ export const Result = ({ graphData }: { graphData: GraphData }) => {
 
   return (
     <div className="flex justify-center items-center">
-      <ForceGraph2D
+      <ForceGraph3D graphData={filteredGraphData} />
+      {/* <ForceGraph2D
         height={height ?? 500}
         width={width ?? 500}
         graphData={filteredGraphData}
@@ -85,7 +90,7 @@ export const Result = ({ graphData }: { graphData: GraphData }) => {
             );
           }
         }}
-      />
+      /> */}
     </div>
   );
 };
