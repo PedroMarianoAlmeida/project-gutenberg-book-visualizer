@@ -1,4 +1,4 @@
-import { generateObject, streamText, type CoreMessage } from "ai";
+import { generateObject, streamText, type CoreMessage, generateText } from "ai";
 import { z } from "zod";
 
 import { getBookText } from "@/services/gutenbergService";
@@ -86,12 +86,47 @@ export const chatAboutTheBook = async ({
     const bookContent = await getBookText(Number(bookId));
     if (!bookContent.success) throw new Error("Book not found");
 
-    const result = streamText({
+    const fullText = bookContent.result;
+
+    // If small enough, stream the whole thing
+    if (fullText.length <= CHUNK_SIZE) {
+      return streamText({
+        model: google("gemini-2.0-flash-001"),
+        system: `You are a helpful assistant that will answer questions about this book: ${fullText}`,
+        messages,
+      });
+    }
+
+    // Split the book into chunks
+    const chunks = [];
+    for (let i = 0; i < fullText.length; i += CHUNK_SIZE) {
+      chunks.push(fullText.slice(i, i + CHUNK_SIZE));
+    }
+
+    // Get static responses for each chunk using generateText
+    const chunkResponses = await Promise.allSettled(
+      chunks.map((chunk, index) =>
+        generateText({
+          model: google("gemini-2.0-flash-001"),
+          system: `You are a helpful assistant. Based on the following part of a book, answer the user's questions.`,
+          prompt: `Book segment:\n${chunk}\n\nUser messages:\n${messages
+            .map((m) => `${m.role}: ${m.content}`)
+            .join("\n")}`,
+        })
+      )
+    );
+
+    const validAnswers = chunkResponses
+      .filter((res) => res.status === "fulfilled")
+      .map((res, i) => `Chunk ${i + 1} answer:\n${res.value.text}`);
+
+    const compiledSummary = validAnswers.join("\n\n");
+    console.log({ compiledSummary });
+    // Final streamed response using the compiled summaries and user messages
+    return streamText({
       model: google("gemini-2.0-flash-001"),
-      system: `You are a helpfull assistent that will answer questions about this book: ${bookContent.result}`,
+      system: `Here is a compiled summary from multiple parts of the book:\n\n${compiledSummary}\n\nNow answer the user's question based on that.`,
       messages,
     });
-
-    return result
   });
 };
