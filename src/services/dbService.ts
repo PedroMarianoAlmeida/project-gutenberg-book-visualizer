@@ -1,10 +1,4 @@
-import {
-  doc,
-  getDoc,
-  setDoc,
-  runTransaction,
-  arrayUnion,
-} from "firebase/firestore";
+import { doc, getDoc, runTransaction } from "firebase/firestore";
 
 import { database } from "@/config/databaseConfig";
 import { asyncWrapper } from "@/utils/asyncWrapper";

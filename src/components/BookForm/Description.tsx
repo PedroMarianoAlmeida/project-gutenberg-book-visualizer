@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Info } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,

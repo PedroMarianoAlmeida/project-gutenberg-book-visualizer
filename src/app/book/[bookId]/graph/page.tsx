@@ -10,7 +10,6 @@ import {
   saveGraphFromDatabase,
 } from "@/services/dbService";
 
-import mockData from "./graphDataSample.json";
 import { Result } from "./Result";
 import { Error } from "./Error";
 import { ChatCTA } from "./ChatCTA";
