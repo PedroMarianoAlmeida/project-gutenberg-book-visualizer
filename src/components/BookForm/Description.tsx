@@ -25,10 +25,7 @@ const Note = ({ ids }: { ids: string[] }) => {
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <p>
-            <span className="font-bold">Note:</span> Or use one Ids that a
-            previous user already create the Graph
-          </p>
+          Or check a book that a previous user already create the Graph
         </AccordionTrigger>
         <AccordionContent>
           {ids.map((id) => (
@@ -50,7 +47,7 @@ export const Description = ({ ids }: MaybeBookIds) => {
       </p>
       <Dialog>
         <DialogTrigger asChild>
-          <Info />
+          <Info className="cursor-pointer" />
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
