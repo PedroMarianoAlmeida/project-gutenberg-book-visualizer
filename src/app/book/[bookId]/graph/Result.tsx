@@ -51,7 +51,13 @@ export const Result = ({ graphData }: { graphData: GraphData }) => {
 
   return (
     <div className="flex justify-center items-center">
-      <ForceGraph3D graphData={filteredGraphData} />
+      <ForceGraph3D
+        graphData={filteredGraphData}
+        backgroundColor={isSystemDark ? "black" : "white"}
+        linkColor={() => (isSystemDark ? "#d9eaef" : "black")}
+        linkLabel={(link) => link.relation}
+        linkWidth={1}
+      />
       {/* <ForceGraph2D
         height={height ?? 500}
         width={width ?? 500}
