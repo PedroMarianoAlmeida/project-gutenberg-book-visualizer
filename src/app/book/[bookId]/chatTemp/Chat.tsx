@@ -15,12 +15,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const messageParsed = (message: string) => {
-  const res = message
+  const rawParts = message
     .split("\n")
     .filter((line) => line.startsWith("0:"))
-    .map((line) => line.replace(/^0:"/, "").replace(/"$/, ""))
-    .join("");
-  return res;
+    .map((line) => line.slice(2)); // remove '0:'
+
+  const parsedParts = rawParts.map((part) => {
+    try {
+      return JSON.parse(part);
+    } catch {
+      return "";
+    }
+  });
+  const fullText = parsedParts.join("");
+  const cleanText = fullText.replace(/[^\w\s.,!?'"-]/g, "");
+  return cleanText;
 };
 
 export const Chat = ({ bookId }: { bookId: string }) => {
