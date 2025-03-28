@@ -68,10 +68,12 @@ export default async function Page({
     graphFromDbResult.value.success
   ) {
     graphData = graphFromDbResult.value.result.bokGraphData;
+    console.log("Graph from DB");
   } else {
     const aiGraphData = await createGraphData(bookTextResult.value.result);
     if (!aiGraphData.success) return <Error message="Error creating graph" />;
     graphData = aiGraphData.result.bokGraphData;
+    console.log("Graph from AI");
     await saveGraphFromDatabase({
       bookGraph: graphData,
       bookId: bookIdNumber,
@@ -79,7 +81,7 @@ export default async function Page({
   }
 
   return (
-    <main className="p-4 w-full">
+    <main className="p-4 w-full ">
       <h1 className="text-center text-xl w-full mt-18 md:mt-12">{bookTitle}</h1>
       <Link
         href="/"

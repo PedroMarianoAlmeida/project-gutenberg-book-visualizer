@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 
 import { useWindowSize } from "@uidotdev/usehooks";
+import { Switch } from "@/components/ui/switch";
 
 import { GraphData } from "@/services/aiService";
 import { calculateCharacterImportance } from "@/app/book/[bookId]/graph/graphDataSanitize";
@@ -51,6 +52,7 @@ export const Result = ({ graphData }: { graphData: GraphData }) => {
 
   return (
     <div className="flex justify-center items-center">
+      <Switch id="airplane-mode" className="absolute top-4 right-4 z-20"/>
       <ForceGraph3D
         graphData={filteredGraphData}
         backgroundColor={isSystemDark ? "black" : "white"}
