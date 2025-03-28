@@ -65,49 +65,58 @@ export const Chat = ({ bookId }: { bookId: string }) => {
         <ScrollArea className="h-[calc(80vh-8rem)]">
           <CardContent className="p-4">
             <div className="space-y-4">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${
-                    message.role === "user" ? "justify-end" : "justify-start"
-                  }`}
-                >
+              {messages.map((message) => {
+                console.log({ message });
+                const messageParsed = message.content
+                  .split("\n")
+                  .filter((line) => line.startsWith("0:"))
+                  .map((line) => line.replace(/^0:"/, "").replace(/"$/, ""))
+                  .join("");
+
+                return (
                   <div
-                    className={`flex gap-3 max-w-[80%] ${
-                      message.role === "user" ? "flex-row-reverse" : "flex-row"
+                    key={message.id}
+                    className={`flex ${
+                      message.role === "user" ? "justify-end" : "justify-start"
                     }`}
                   >
-                    <Avatar className="h-8 w-8">
-                      {message.role === "assistant" ? (
-                        <AvatarImage
-                          src="/placeholder.svg?height=32&width=32"
-                          alt="AI"
-                        />
-                      ) : (
-                        <AvatarImage
-                          src="/placeholder.svg?height=32&width=32"
-                          alt="User"
-                        />
-                      )}
-                      <AvatarFallback>
-                        {message.role === "user" ? "U" : "AI"}
-                      </AvatarFallback>
-                    </Avatar>
+                    <div
+                      className={`flex gap-3 max-w-[80%] ${
+                        message.role === "user"
+                          ? "flex-row-reverse"
+                          : "flex-row"
+                      }`}
+                    >
+                      <Avatar className="h-8 w-8">
+                        {message.role === "assistant" ? (
+                          <AvatarImage
+                            src="/placeholder.svg?height=32&width=32"
+                            alt="AI"
+                          />
+                        ) : (
+                          <AvatarImage
+                            src="/placeholder.svg?height=32&width=32"
+                            alt="User"
+                          />
+                        )}
+                        <AvatarFallback>
+                          {message.role === "user" ? "U" : "AI"}
+                        </AvatarFallback>
+                      </Avatar>
 
-                    <div>
                       <div
-                        className={`rounded-lg p-3 ${
+                        className={`rounded-lg p-3 whitespace-pre-line ${
                           message.role === "user"
                             ? "bg-primary text-primary-foreground"
                             : "bg-muted"
                         }`}
                       >
-                        {message.content}
+                        {messageParsed}
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </ScrollArea>
