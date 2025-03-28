@@ -1,5 +1,7 @@
-import { generateObject } from "ai";
+import { generateObject, streamText, type CoreMessage } from "ai";
 import { z } from "zod";
+
+import { getBookText } from "@/services/gutenbergService";
 
 import { google } from "@ai-sdk/google";
 import { asyncWrapper } from "@/utils/asyncWrapper";
@@ -69,5 +71,27 @@ export const createGraphData = async (bookText: string) => {
     });
 
     return { bookGraphData: final.object as GraphData };
+  });
+};
+
+interface ChatAboutTheBook {
+  bookId: string;
+  messages: CoreMessage[];
+}
+export const chatAboutTheBook = async ({
+  bookId,
+  messages,
+}: ChatAboutTheBook) => {
+  return asyncWrapper(async () => {
+    const bookContent = await getBookText(Number(bookId));
+    if (!bookContent.success) throw new Error("Book not found");
+
+    const result = streamText({
+      model: google("gemini-2.0-flash-001"),
+      system: `You are a helpfull assistent that will answer questions about this book: ${bookContent.result}`,
+      messages,
+    });
+
+    return result
   });
 };
