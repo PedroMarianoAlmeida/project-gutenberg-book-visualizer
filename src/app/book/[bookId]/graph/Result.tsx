@@ -22,6 +22,9 @@ type GraphData = z.infer<typeof graphAiSchema>;
 export const Result = ({ graphData }: { graphData: GraphData }) => {
   const { height, width } = useWindowSize();
   const characterImportance = calculateCharacterImportance(graphData);
+  const isSystemDark = window.matchMedia(
+    "(prefers-color-scheme: dark)"
+  ).matches;
 
   return (
     <div className="flex justify-center items-center">
@@ -29,7 +32,7 @@ export const Result = ({ graphData }: { graphData: GraphData }) => {
         height={height ?? 500}
         width={width ?? 500}
         graphData={graphData}
-        linkColor={() => "#d9eaef"}
+        linkColor={() => (isSystemDark ? "#d9eaef" : "black")}
         linkLabel={(link) => link.relation}
         nodeCanvasObject={(node, ctx, globalScale) => {
           const customNode = node as CustomNode;
@@ -39,19 +42,16 @@ export const Result = ({ graphData }: { graphData: GraphData }) => {
           const fontSize = 15 / globalScale;
           ctx.font = `${fontSize}px Sans-Serif`;
 
-          // Draw fixed red circle
           ctx.beginPath();
           ctx.arc(customNode.x, customNode.y, radius, 0, 2 * Math.PI, false);
-          ctx.fillStyle = "#aa873b";
+          ctx.fillStyle = isSystemDark ? "#8a651f" : "#cc9933";
           ctx.fill();
 
-          // Draw white label
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.fillStyle = "#FFFFFF";
+          ctx.fillStyle = isSystemDark ? "white" : "black";
           ctx.fillText(label, customNode.x, customNode.y);
 
-          // Store radius for pointer interaction
           customNode.__bckgDimensions = [radius * 2, radius * 2];
         }}
         nodePointerAreaPaint={(node, color, ctx) => {
