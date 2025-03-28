@@ -1,4 +1,7 @@
+"use client";
+
 import { MessageCircle } from "lucide-react";
+import { motion } from "framer-motion";
 
 import {
   Dialog,
@@ -13,7 +16,19 @@ export const ChatCTA = ({ bookId }: { bookId: string }) => {
   return (
     <Dialog>
       <DialogTrigger className="absolute bottom-4 right-4 cursor-pointer">
-        <MessageCircle size={60} />
+        <motion.div
+          animate={{
+            x: [0, -5, 5, -5, 5, 0],
+          }}
+          transition={{
+            duration: 0.5,
+            repeat: Infinity,
+            repeatDelay: 2.5,
+            ease: "easeInOut",
+          }}
+        >
+          <MessageCircle size={60} />
+        </motion.div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
