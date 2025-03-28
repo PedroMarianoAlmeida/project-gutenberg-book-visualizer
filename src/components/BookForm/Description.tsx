@@ -10,8 +10,37 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 
 import { MaybeBookIds } from "@/app/HomePageClient";
+
+const Note = ({ ids }: { ids: string[] }) => {
+  return (
+    <Accordion type="single" collapsible className="w-full">
+      <AccordionItem value="item-1">
+        <AccordionTrigger>
+          <p>
+            <span className="font-bold">Note:</span> Or use one Ids that a
+            previous user already create the Graph
+          </p>
+        </AccordionTrigger>
+        <AccordionContent>
+          {ids.map((id) => (
+            <Link href={`/book/${id}/metadata`} key={id}>
+              <Badge>{id}</Badge>
+            </Link>
+          ))}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+};
 
 export const Description = ({ ids }: MaybeBookIds) => {
   return (
@@ -38,6 +67,7 @@ export const Description = ({ ids }: MaybeBookIds) => {
                 </Button>
               </Link>{" "}
               official website to search books
+              {ids && <Note ids={ids} />}
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
