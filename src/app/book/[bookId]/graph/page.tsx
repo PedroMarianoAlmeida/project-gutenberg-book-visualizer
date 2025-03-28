@@ -4,8 +4,11 @@ import Link from "next/link";
 import { Home } from "lucide-react";
 
 import { getBookText, getBookMetadata } from "@/services/gutenbergService";
-import { createGraphData } from "@/services/aiService";
-import { getGraphFromDatabase } from "@/services/dbService";
+import { createGraphData, GraphData } from "@/services/aiService";
+import {
+  getGraphFromDatabase,
+  saveGraphFromDatabase,
+} from "@/services/dbService";
 
 import mockData from "./graphDataSample.json";
 import { Result } from "./Result";
@@ -60,19 +63,21 @@ export default async function Page({
 
   const bookTitle = bookMetadataResult.value.result.Title;
 
-  let graphData;
+  let graphData: GraphData | null = null;
   if (
     graphFromDbResult.status === "fulfilled" &&
     graphFromDbResult.value.success
   ) {
-    graphData = graphFromDbResult.value;
-    console.log({ graphData });
+    graphData = graphFromDbResult.value.result.bokGraphData;
   } else {
-    graphData = await createGraphData(bookTextResult.value.result);
-    if (!graphData.success) return <Error message="Error creating graph" />;
+    const aiGraphData = await createGraphData(bookTextResult.value.result);
+    if (!aiGraphData.success) return <Error message="Error creating graph" />;
+    graphData = aiGraphData.result.bokGraphData;
+    saveGraphFromDatabase({
+      bookGraph: graphData,
+      bookId: bookIdNumber,
+    });
   }
-
-  console.log({ bookText: bookTextResult.value.result });
 
   return (
     <main className="p-4 w-full">
@@ -84,7 +89,7 @@ export default async function Page({
       >
         <Home className="h-5 w-5" />
       </Link>
-      {/* <Result graphData={graphData.result.bokGraphData} /> */}
+      <Result graphData={graphData} />
       <ChatCTA bookId={bookId} />
     </main>
   );

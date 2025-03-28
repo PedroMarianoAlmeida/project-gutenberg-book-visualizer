@@ -1,8 +1,8 @@
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 import { database } from "@/config/databaseConfig";
 import { asyncWrapper } from "@/utils/asyncWrapper";
-import { graphAiSchema } from "@/services/aiService";
+import { GraphData, graphAiSchema } from "@/services/aiService";
 
 // https://firebase.google.com/docs/firestore/query-data/get-data
 
@@ -33,7 +33,21 @@ export const getGraphFromDatabase = (bookId: number) => {
     if (!docSnap.exists) throw new Error("Document not founded");
 
     const data = docSnap.data();
-    console.log({ data });
-    return { data };
+    const bokGraphData: GraphData = graphAiSchema.parse(data);
+    return { bokGraphData };
+  });
+};
+
+interface SaveGraphFromDatabase {
+  bookId: number;
+  bookGraph: GraphData;
+}
+export const saveGraphFromDatabase = ({
+  bookId,
+  bookGraph,
+}: SaveGraphFromDatabase) => {
+  return asyncWrapper(async () => {
+    const docRef = doc(database, "graphs", String(bookId));
+    setDoc(docRef, bookGraph);
   });
 };

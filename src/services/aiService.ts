@@ -4,38 +4,16 @@ import { z } from "zod";
 import { google } from "@ai-sdk/google";
 import { asyncWrapper } from "@/utils/asyncWrapper";
 
-export const graphAiSchema = z
-  .object({
-    nodes: z.array(z.object({ id: z.string() })),
-    links: z.array(
-      z.object({
-        source: z.string(),
-        target: z.string(),
-        relation: z.string(),
-      })
-    ),
-  })
-  .superRefine((data, ctx) => {
-    const nodeIds = new Set(data.nodes.map((node) => node.id));
-
-    data.links.forEach((link, index) => {
-      if (!nodeIds.has(link.source)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `Link at index ${index} has unknown source: ${link.source}`,
-          path: ["links", index, "source"],
-        });
-      }
-
-      if (!nodeIds.has(link.target)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `Link at index ${index} has unknown target: ${link.target}`,
-          path: ["links", index, "target"],
-        });
-      }
-    });
-  });
+export const graphAiSchema = z.object({
+  nodes: z.array(z.object({ id: z.string() })),
+  links: z.array(
+    z.object({
+      source: z.string(),
+      target: z.string(),
+      relation: z.string(),
+    })
+  ),
+});
 
 export type GraphData = z.infer<typeof graphAiSchema>;
 
