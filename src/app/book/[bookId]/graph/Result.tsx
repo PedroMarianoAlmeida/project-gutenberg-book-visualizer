@@ -25,6 +25,7 @@ type CustomNode = {
 
 export const Result = ({ graphData }: { graphData: GraphData }) => {
   const [isSystemDark, setIsSystemDark] = useState(false);
+  const [is2D, setIs2d] = useState(true);
   const { height, width } = useWindowSize();
   const characterImportance = calculateCharacterImportance(graphData);
 
@@ -52,54 +53,61 @@ export const Result = ({ graphData }: { graphData: GraphData }) => {
 
   return (
     <div className="flex justify-center items-center">
-      <Switch id="airplane-mode" className="absolute top-4 right-4 z-20"/>
-      <ForceGraph3D
-        graphData={filteredGraphData}
-        backgroundColor={isSystemDark ? "black" : "white"}
-        linkColor={() => (isSystemDark ? "#d9eaef" : "black")}
-        linkLabel={(link) => link.relation}
-        linkWidth={1}
-        nodeLabel={(node) => String(node.id)}
+      <Switch
+        id="airplane-mode"
+        className="absolute top-4 right-4 z-20"
+        onClick={() => setIs2d((curr) => !curr)}
       />
-      {/* <ForceGraph2D
-        height={height ?? 500}
-        width={width ?? 500}
-        graphData={filteredGraphData}
-        linkColor={() => (isSystemDark ? "#d9eaef" : "black")}
-        linkLabel={(link) => link.relation}
-        nodeCanvasObject={(node, ctx, globalScale) => {
-          const customNode = node as CustomNode;
-          const label = customNode.id;
+      {is2D ? (
+        <ForceGraph2D
+          height={height ?? 500}
+          width={width ?? 500}
+          graphData={filteredGraphData}
+          linkColor={() => (isSystemDark ? "#d9eaef" : "black")}
+          linkLabel={(link) => link.relation}
+          nodeCanvasObject={(node, ctx, globalScale) => {
+            const customNode = node as CustomNode;
+            const label = customNode.id;
 
-          const radius = characterImportance[customNode.id] ?? 5;
-          const fontSize = 15 / globalScale;
-          ctx.font = `${fontSize}px Sans-Serif`;
+            const radius = characterImportance[customNode.id] ?? 5;
+            const fontSize = 15 / globalScale;
+            ctx.font = `${fontSize}px Sans-Serif`;
 
-          ctx.beginPath();
-          ctx.arc(customNode.x, customNode.y, radius, 0, 2 * Math.PI, false);
-          ctx.fillStyle = isSystemDark ? "#8a651f" : "#cc9933";
-          ctx.fill();
+            ctx.beginPath();
+            ctx.arc(customNode.x, customNode.y, radius, 0, 2 * Math.PI, false);
+            ctx.fillStyle = isSystemDark ? "#8a651f" : "#cc9933";
+            ctx.fill();
 
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillStyle = isSystemDark ? "white" : "black";
-          ctx.fillText(label, customNode.x, customNode.y);
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = isSystemDark ? "white" : "black";
+            ctx.fillText(label, customNode.x, customNode.y);
 
-          customNode.__bckgDimensions = [radius * 2, radius * 2];
-        }}
-        nodePointerAreaPaint={(node, color, ctx) => {
-          const customNode = node as CustomNode;
-          const bckgDimensions = customNode.__bckgDimensions;
-          if (bckgDimensions) {
-            ctx.fillStyle = color;
-            ctx.fillRect(
-              customNode.x - bckgDimensions[0] / 2,
-              customNode.y - bckgDimensions[1] / 2,
-              ...bckgDimensions
-            );
-          }
-        }}
-      /> */}
+            customNode.__bckgDimensions = [radius * 2, radius * 2];
+          }}
+          nodePointerAreaPaint={(node, color, ctx) => {
+            const customNode = node as CustomNode;
+            const bckgDimensions = customNode.__bckgDimensions;
+            if (bckgDimensions) {
+              ctx.fillStyle = color;
+              ctx.fillRect(
+                customNode.x - bckgDimensions[0] / 2,
+                customNode.y - bckgDimensions[1] / 2,
+                ...bckgDimensions
+              );
+            }
+          }}
+        />
+      ) : (
+        <ForceGraph3D
+          graphData={filteredGraphData}
+          backgroundColor={isSystemDark ? "black" : "white"}
+          linkColor={() => (isSystemDark ? "#d9eaef" : "black")}
+          linkLabel={(link) => link.relation}
+          linkWidth={1}
+          nodeLabel={(node) => String(node.id)}
+        />
+      )}
     </div>
   );
 };
