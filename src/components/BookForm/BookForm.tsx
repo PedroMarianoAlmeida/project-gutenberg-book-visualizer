@@ -1,7 +1,10 @@
 "use client";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Loader2 } from "lucide-react";
+
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -36,6 +39,7 @@ const transformedSchema = rawSchema.transform(({ bookId }) => ({
 
 export const BookForm = ({ ids }: MaybeBookIds) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof rawSchema>>({
     resolver: zodResolver(rawSchema),
     defaultValues: {
@@ -44,6 +48,7 @@ export const BookForm = ({ ids }: MaybeBookIds) => {
   });
 
   function onSubmit(values: z.infer<typeof transformedSchema>) {
+    setLoading(true);
     router.push(`book/${values.bookId}/metadata`);
   }
 
@@ -86,7 +91,9 @@ export const BookForm = ({ ids }: MaybeBookIds) => {
               </FormItem>
             )}
           />
-          <Button type="submit">Check Book</Button>
+          <Button type="submit" disabled={loading}>
+            Check Book {loading && <Loader2 className="animate-spin" />}
+          </Button>
         </form>
       </Form>
     </section>
