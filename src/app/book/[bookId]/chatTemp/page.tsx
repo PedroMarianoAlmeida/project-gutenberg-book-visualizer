@@ -1,5 +1,4 @@
-import { Chat } from "./Chat";
-import { getBookText } from "@/services/gutenbergService";
+import { ChatCTA } from "./ChatCTA";
 
 export default async function Page({
   params,
@@ -8,5 +7,5 @@ export default async function Page({
 }) {
   const { bookId } = await params;
 
-  return <Chat bookId={bookId} />;
+  return <ChatCTA bookId={bookId} />;
 }

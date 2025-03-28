@@ -54,7 +54,7 @@ export const Chat = ({ bookId }: { bookId: string }) => {
     },
     streamProtocol: "text",
   });
-  console.log({ status, error, content: messages });
+
   return (
     <>
       <Card className="w-full max-w-3xl h-[80vh]">
