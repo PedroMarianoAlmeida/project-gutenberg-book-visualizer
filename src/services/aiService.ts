@@ -57,10 +57,10 @@ export const createGraphData = async (bookText: string) => {
 
     let fulfilled: PromiseFulfilledResult<GenerateObjectResult<GraphData>>[] =
       [];
-    let attempt = 0;
+    let chunkAttempt = 0;
 
-    while (attempt < models.length && fulfilled.length === 0) {
-      const currentModel = models[attempt];
+    while (chunkAttempt < models.length && fulfilled.length === 0) {
+      const currentModel = models[chunkAttempt];
 
       const chunkPromises = chunks.map((chunk) =>
         generateObject({
@@ -80,7 +80,7 @@ export const createGraphData = async (bookText: string) => {
       if (fulfilled.length === 0) {
         console.warn(`Model ${currentModel} failed. Trying next model...`);
       }
-      attempt++;
+      chunkAttempt++;
     }
 
     if (fulfilled.length === 0) {
@@ -95,15 +95,33 @@ export const createGraphData = async (bookText: string) => {
       .map((res, i) => `Chunk ${i + 1}: ${JSON.stringify(res.value.object)}`)
       .join("\n");
 
-    const final = await generateObject({
-      model: google("gemini-2.5-pro-exp-03-25"),
-      schema: graphAiSchema,
-      system:
-        "You will receive multiple character-relationship maps from different parts of the book. Combine them into one coherent map.",
-      prompt: summaryPrompt,
-    });
+    let finalResult: GenerateObjectResult<GraphData> | null = null;
+    let compiledAttempt = 0;
 
-    return { bookGraphData: final.object as GraphData };
+    while (compiledAttempt < models.length && finalResult === null) {
+      const currentModel = models[compiledAttempt];
+
+      try {
+        finalResult = await generateObject({
+          model: currentModel,
+          schema: graphAiSchema,
+          system:
+            "You will receive multiple character-relationship maps from different parts of the book. Combine them into one coherent map.",
+          prompt: summaryPrompt,
+        });
+      } catch (error) {
+        console.warn(
+          `Model ${currentModel} failed on final attempt. Trying next model...`
+        );
+      }
+      compiledAttempt++;
+    }
+
+    if (!finalResult) {
+      throw new Error("All AI calls failed for final summary step");
+    }
+
+    return { bookGraphData: finalResult.object as GraphData };
   });
 };
 
