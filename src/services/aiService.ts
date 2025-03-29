@@ -23,12 +23,13 @@ const splitText = (text: string, chunkSize: number) => {
 };
 
 export const graphAiSchema = z.object({
-  nodes: z.array(z.object({ id: z.string() })),
+  nodes: z.array(z.object({ id: z.string(), cluster: z.string() })).max(20),
   links: z.array(
     z.object({
       source: z.string(),
       target: z.string(),
       relation: z.string(),
+      isPositive: z.boolean()
     })
   ),
 });
@@ -39,8 +40,14 @@ export const createGraphData = async (bookText: string) => {
   return asyncWrapper(async () => {
     const chunks = splitText(bookText, CHUNK_SIZE);
 
-    const systemMessage =
-      "You will receive as prompt the text of a book, extract the characters and the relation between them";
+    const systemMessage = `
+      You will receive as prompt the text of a book, extract the characters and the relation between them
+      All characters (nodes) must have links (as much as better)
+      Limit in the 20 most important
+      Group characters in Clusters
+      All links should be related to the characters
+      Add a relation name and if it is a positive or negative
+    `;
 
     const chunkPromises = chunks.map((chunk) =>
       generateObject({
