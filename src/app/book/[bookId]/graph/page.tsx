@@ -14,6 +14,7 @@ import { Result } from "@/components/Graph/Result";
 import { Error } from "./Error";
 import { ChatCTA } from "@/components/Chat/ChatCTA";
 import { GraphInfo } from "@/components/Graph/GraphInfo";
+import { graphDataSanitize } from "@/utils/graphDataSanitize";
 
 export default async function Page({
   params,
@@ -81,6 +82,9 @@ export default async function Page({
       bookId: bookIdNumber,
     });
   }
+
+  const graphSanitized = graphDataSanitize(graphData);
+  console.log({ graphSanitized });
 
   return (
     <main className="p-4 w-full ">
