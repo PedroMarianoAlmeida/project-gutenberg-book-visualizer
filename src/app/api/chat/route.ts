@@ -1,21 +1,18 @@
-import { google } from "@ai-sdk/google";
-import { streamText } from "ai";
+import { chatAboutTheBook } from "@/services/aiService";
 
-import { getBookText } from "@/services/gutenbergService";
-
-// Allow streaming responses up to 30 seconds
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
   const { messages, bookId } = await req.json();
+  const chat = await chatAboutTheBook({ bookId, messages });
+  if (!chat.success)
+    return new Response(
+      JSON.stringify({ error: chat.message || "Something went wrong" }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
 
-  const bookContent = await getBookText(bookId);
-  if (!bookContent.success) return;
-
-  const result = streamText({
-    model: google("gemini-2.0-flash-001"),
-    system: `You are a helpfull assistent that will answer questions about this book: ${bookContent.result}`,
-    messages,
-  });
-  return result.toDataStreamResponse({ sendUsage: false });
+  return chat.result.toDataStreamResponse({ sendUsage: false });
 }

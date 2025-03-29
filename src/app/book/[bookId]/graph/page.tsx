@@ -68,12 +68,13 @@ export default async function Page({
     graphFromDbResult.value.success
   ) {
     graphData = graphFromDbResult.value.result.bokGraphData;
-    console.log("Graph from DB");
   } else {
     const aiGraphData = await createGraphData(bookTextResult.value.result);
     if (!aiGraphData.success) return <Error message="Error creating graph" />;
-    graphData = aiGraphData.result.bokGraphData;
-    console.log("Graph from AI");
+    graphData = aiGraphData.result.bookGraphData;
+    if (graphData === null) {
+      return <Error message="Graph data is missing or failed to generate." />;
+    }
     await saveGraphFromDatabase({
       bookGraph: graphData,
       bookId: bookIdNumber,
