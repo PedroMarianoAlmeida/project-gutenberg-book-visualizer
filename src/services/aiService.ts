@@ -10,9 +10,17 @@ import { z } from "zod";
 import { getBookText } from "@/services/gutenbergService";
 
 import { google } from "@ai-sdk/google";
+import { groq } from "@ai-sdk/groq";
 import { asyncWrapper } from "@/utils/asyncWrapper";
 
 const CHUNK_SIZE = 2_000_000;
+
+const models = [
+  google("gemini-2.5-pro-exp-03-25"),
+  google("gemini-2.0-flash-001"),
+  groq("deepseek-r1-distill-llama-70b"),
+  groq("gemma2-9b-it"),
+];
 
 const splitText = (text: string, chunkSize: number) => {
   const chunks = [];
@@ -50,20 +58,33 @@ export const createGraphData = async (bookText: string) => {
       Add a relation name and if it is a positive or negative
     `;
 
-    const chunkPromises = chunks.map((chunk) =>
-      generateObject({
-        model: google("gemini-2.0-flash-001"),
-        schema: graphAiSchema,
-        system: systemMessage,
-        prompt: chunk,
-      })
-    );
+    let fulfilled: PromiseFulfilledResult<GenerateObjectResult<GraphData>>[] =
+      [];
+    let chunkAttempt = 0;
 
-    const results = await Promise.allSettled(chunkPromises);
-    const fulfilled = results.filter(
-      (r): r is PromiseFulfilledResult<GenerateObjectResult<GraphData>> =>
-        r.status === "fulfilled"
-    );
+    while (chunkAttempt < models.length && fulfilled.length === 0) {
+      const currentModel = models[chunkAttempt];
+
+      const chunkPromises = chunks.map((chunk) =>
+        generateObject({
+          model: currentModel,
+          schema: graphAiSchema,
+          system: systemMessage,
+          prompt: chunk,
+        })
+      );
+
+      const results = await Promise.allSettled(chunkPromises);
+      fulfilled = results.filter(
+        (r): r is PromiseFulfilledResult<GenerateObjectResult<GraphData>> =>
+          r.status === "fulfilled"
+      );
+
+      if (fulfilled.length === 0) {
+        console.warn(`Model ${currentModel} failed. Trying next model...`);
+      }
+      chunkAttempt++;
+    }
 
     if (fulfilled.length === 0) {
       throw new Error("All AI calls failed");
@@ -77,15 +98,29 @@ export const createGraphData = async (bookText: string) => {
       .map((res, i) => `Chunk ${i + 1}: ${JSON.stringify(res.value.object)}`)
       .join("\n");
 
-    const final = await generateObject({
-      model: google("gemini-2.0-flash-001"),
-      schema: graphAiSchema,
-      system:
-        "You will receive multiple character-relationship maps from different parts of the book. Combine them into one coherent map.",
-      prompt: summaryPrompt,
-    });
+    let finalResult: GenerateObjectResult<GraphData> | null = null;
+    let compiledAttempt = 0;
 
-    return { bookGraphData: final.object as GraphData };
+    while (compiledAttempt < models.length && finalResult === null) {
+      const currentModel = models[compiledAttempt];
+
+      try {
+        finalResult = await generateObject({
+          model: currentModel,
+          schema: graphAiSchema,
+          system:
+            "You will receive multiple character-relationship maps from different parts of the book. Combine them into one coherent map.",
+          prompt: summaryPrompt,
+        });
+      } catch {}
+      compiledAttempt++;
+    }
+
+    if (!finalResult) {
+      throw new Error("All AI calls failed for final summary step");
+    }
+
+    return { bookGraphData: finalResult.object as GraphData };
   });
 };
 
