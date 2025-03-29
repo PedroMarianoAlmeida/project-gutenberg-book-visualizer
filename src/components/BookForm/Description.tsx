@@ -39,7 +39,7 @@ const Note = ({ ids }: { ids: string[] }) => {
                 className={loading ? "pointer-events-none" : ""}
               >
                 <Button
-                  className="rounded-3xl h-5 w-4 cursor-pointer"
+                  className="rounded-3xl h-5 px-2 cursor-pointer"
                   onClick={() => setLoading(true)}
                   disabled={loading}
                 >

@@ -69,26 +69,7 @@ export const calculateCharacterImportance = (graphData: GraphData) => {
     }
   });
 
-  // Create a new object for normalized importance.
-  const normalizedImportance: Record<string, number> = {};
-  const counts = Object.values(rawImportance);
-  const min = Math.min(...counts);
-  const max = Math.max(...counts);
-
-  if (min === max) {
-    // If all nodes have the same raw importance, assign the midpoint value (12.5).
-    for (const key in rawImportance) {
-      normalizedImportance[key] = 12.5;
-    }
-  } else {
-    for (const key in rawImportance) {
-      const value = rawImportance[key];
-      // Linear normalization: map raw value to range [5, 20]
-      normalizedImportance[key] = 5 + ((value - min) * 15) / (max - min);
-    }
-  }
-
-  return normalizedImportance;
+  return rawImportance;
 };
 
 const linkColorBySentiment = (
@@ -124,6 +105,7 @@ export const getTop20ImportantNodesWithColor = (graphData: GraphData) => {
       ...node,
       importance: importanceMap[node.id],
     }))
+    .filter((node) => node.importance > 0)
     .sort((a, b) => b.importance - a.importance)
     .slice(0, 20)
     .map((node, index) => ({
