@@ -10,9 +10,11 @@ import {
   saveGraphFromDatabase,
 } from "@/services/dbService";
 
-import { Result } from "./Result";
+import { Result } from "@/components/Graph/Result";
 import { Error } from "./Error";
-import { ChatCTA } from "./ChatCTA";
+import { ChatCTA } from "@/components/Chat/ChatCTA";
+import { GraphInfo } from "@/components/Graph/GraphInfo";
+import { graphDataSanitize } from "@/utils/graphDataSanitize";
 
 export default async function Page({
   params,
@@ -81,9 +83,15 @@ export default async function Page({
     });
   }
 
+  const graphSanitized = graphDataSanitize(graphData);
+
   return (
     <main className="p-4 w-full ">
-      <h1 className="text-center text-xl w-full mt-18 md:mt-12">{bookTitle}</h1>
+      <div className="flex gap-2 w-full mt-18 md:mt-12 items-center justify-center">
+        <h1 className="text-center text-xl ">{bookTitle}</h1>
+        <GraphInfo enhancedGraphData={graphSanitized} />
+      </div>
+
       <Link
         href="/"
         className="fixed bottom-4 left-4 p-2 rounded-full bg-background/80 backdrop-blur-sm shadow-sm hover:bg-background transition-colors duration-200 z-10"
@@ -91,7 +99,7 @@ export default async function Page({
       >
         <Home className="h-5 w-5" />
       </Link>
-      <Result graphData={graphData} />
+      <Result graphData={graphSanitized} />
       <ChatCTA bookId={bookId} />
     </main>
   );
