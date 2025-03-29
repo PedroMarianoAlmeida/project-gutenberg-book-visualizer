@@ -90,7 +90,7 @@ export default async function Page({
     <main className="p-4 w-full ">
       <div className="flex gap-2 w-full mt-18 md:mt-12 items-center justify-center">
         <h1 className="text-center text-xl ">{bookTitle}</h1>
-        <GraphInfo />
+        <GraphInfo enhancedGraphData={graphSanitized} />
       </div>
 
       <Link

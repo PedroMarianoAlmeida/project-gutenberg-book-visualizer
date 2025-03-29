@@ -1,4 +1,19 @@
 import { GraphData } from "@/services/aiService";
+
+type ColoredNode = GraphData["nodes"][number] & {
+  importance: number;
+  color: { dark: string; light: string };
+};
+
+type ColoredLink = GraphData["links"][number] & {
+  color: { dark: string; light: string };
+};
+
+export type EnhancedGraphData = {
+  nodes: ColoredNode[];
+  links: ColoredLink[];
+};
+
 const colorPalette: { dark: string; light: string }[] = [
   { dark: "#264653", light: "#a8dadc" },
   { dark: "#2a9d8f", light: "#d9f8f0" },
@@ -129,7 +144,7 @@ export const getTop20ImportantNodesWithColor = (graphData: GraphData) => {
   return topNodes;
 };
 
-export const graphDataSanitize = (graphData: GraphData): GraphData => {
+export const graphDataSanitize = (graphData: GraphData): EnhancedGraphData => {
   const nodes = getTop20ImportantNodesWithColor(graphData);
   const links = usedLinks({ nodes, links: graphData.links });
   return { nodes, links };
