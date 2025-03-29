@@ -7,7 +7,7 @@ import { useWindowSize } from "@uidotdev/usehooks";
 import { Switch } from "@/components/ui/switch";
 
 import { GraphData } from "@/services/aiService";
-import { calculateCharacterImportance } from "@/app/book/[bookId]/graph/graphDataSanitize";
+import { calculateCharacterImportance } from "@/services/graphDataSanitize";
 
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
@@ -16,13 +16,6 @@ const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
 const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
   ssr: false,
 });
-
-type CustomNode = {
-  id: string;
-  x: number;
-  y: number;
-  __bckgDimensions?: [number, number];
-} & import("react-force-graph-2d").NodeObject;
 
 export const Result = ({ graphData }: { graphData: GraphData }) => {
   const [isSystemDark, setIsSystemDark] = useState(false);
@@ -55,16 +48,9 @@ export const Result = ({ graphData }: { graphData: GraphData }) => {
   return (
     <div className="flex justify-center items-center">
       <div className="absolute top-4 right-4 z-20 flex gap-3 items-center">
-        <p className="text-[20px] font-bold mb-1 text-[#cc9933]">
-          2D
-        </p>
+        <p className="text-[20px] font-bold mb-1 text-[#cc9933]">2D</p>
         <Switch id="airplane-mode" onClick={() => setIs2d((curr) => !curr)} />
-        <Image
-          src="/3D.png"
-          height={30}
-          width={30}
-          alt="3d"
-        />
+        <Image src="/3D.png" height={30} width={30} alt="3d" />
       </div>
 
       {is2D ? (
@@ -72,40 +58,12 @@ export const Result = ({ graphData }: { graphData: GraphData }) => {
           height={height ?? 500}
           width={width ?? 500}
           graphData={filteredGraphData}
-          linkColor={() => (isSystemDark ? "#d9eaef" : "black")}
+          linkColor={(link) => (link.isPositive ? "green" : "red")}
           linkLabel={(link) => link.relation}
-          nodeCanvasObject={(node, ctx, globalScale) => {
-            const customNode = node as CustomNode;
-            const label = customNode.id;
-
-            const radius = characterImportance[customNode.id] ?? 5;
-            const fontSize = 15 / globalScale;
-            ctx.font = `${fontSize}px Sans-Serif`;
-
-            ctx.beginPath();
-            ctx.arc(customNode.x, customNode.y, radius, 0, 2 * Math.PI, false);
-            ctx.fillStyle = isSystemDark ? "#8a651f" : "#cc9933";
-            ctx.fill();
-
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillStyle = isSystemDark ? "white" : "black";
-            ctx.fillText(label, customNode.x, customNode.y);
-
-            customNode.__bckgDimensions = [radius * 2, radius * 2];
-          }}
-          nodePointerAreaPaint={(node, color, ctx) => {
-            const customNode = node as CustomNode;
-            const bckgDimensions = customNode.__bckgDimensions;
-            if (bckgDimensions) {
-              ctx.fillStyle = color;
-              ctx.fillRect(
-                customNode.x - bckgDimensions[0] / 2,
-                customNode.y - bckgDimensions[1] / 2,
-                ...bckgDimensions
-              );
-            }
-          }}
+          nodeLabel={(node) => String(node.id)}
+          // nodeRelSize={(node) => characterImportance[node.id] }
+          nodeAutoColorBy={(node) => "red"}
+          // nodeColor={(node) => "blue"}
         />
       ) : (
         <ForceGraph3D

@@ -10,9 +10,9 @@ import {
   saveGraphFromDatabase,
 } from "@/services/dbService";
 
-import { Result } from "./Result";
+import { Result } from "../../../../components/Graph/Result";
 import { Error } from "./Error";
-import { ChatCTA } from "./ChatCTA";
+import { ChatCTA } from "@/components/Chat/ChatCTA";
 
 export default async function Page({
   params,
