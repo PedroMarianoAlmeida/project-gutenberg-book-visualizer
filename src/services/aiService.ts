@@ -23,13 +23,13 @@ const splitText = (text: string, chunkSize: number) => {
 };
 
 export const graphAiSchema = z.object({
-  nodes: z.array(z.object({ id: z.string(), cluster: z.string() })).max(20),
+  nodes: z.array(z.object({ id: z.string(), description: z.string() })).max(20),
   links: z.array(
     z.object({
       source: z.string(),
       target: z.string(),
       relation: z.string(),
-      isPositive: z.boolean()
+      isPositive: z.boolean(),
     })
   ),
 });
@@ -44,6 +44,7 @@ export const createGraphData = async (bookText: string) => {
       You will receive as prompt the text of a book, extract the characters and the relation between them
       All characters (nodes) must have links (as much as better)
       Limit in the 20 most important
+      Add a description of each character, add his main relations on the text (should be reflected on links)
       Group characters in Clusters
       All links should be related to the characters
       Add a relation name and if it is a positive or negative

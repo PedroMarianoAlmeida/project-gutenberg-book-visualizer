@@ -8,6 +8,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import { EnhancedGraphData } from "@/utils/graphDataSanitize";
 import { useDarkMode } from "@/hooks/useDarkTheme";
@@ -27,21 +33,26 @@ export const GraphInfo = ({
         <SheetHeader>
           <SheetTitle>Graph's Info</SheetTitle>
           <SheetDescription>
-            <div className="flex flex-col gap-2 mt-2">
+            <Accordion type="single" collapsible className="w-full">
               {enhancedGraphData.nodes.map((node) => (
-                <div key={node.id} className="flex gap-2 items-center">
-                  <div
-                    className="h-4 w-4 rounded-full"
-                    style={{
-                      backgroundColor: isDark
-                        ? node.color.dark
-                        : node.color.light,
-                    }}
-                  />
-                  <p>{node.id}</p>
-                </div>
+                <AccordionItem value={node.id} key={node.id}>
+                  <AccordionTrigger key={node.id}>
+                    <div className="flex gap-2 items-center">
+                      <div
+                        className="h-4 w-4 rounded-full"
+                        style={{
+                          backgroundColor: isDark
+                            ? node.color.dark
+                            : node.color.light,
+                        }}
+                      />
+                      <p>{node.id}</p>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>{node.description}</AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           </SheetDescription>
         </SheetHeader>
       </SheetContent>

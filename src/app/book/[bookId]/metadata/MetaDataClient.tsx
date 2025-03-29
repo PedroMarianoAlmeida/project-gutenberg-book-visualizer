@@ -46,7 +46,7 @@ export const MetaDataClient = ({
                 </div>
               </li>
             </ul>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 items-center">
               <Link href={`/book/${bookId}/graph`}>
                 <Button
                   variant="outline"
