@@ -112,11 +112,7 @@ export const createGraphData = async (bookText: string) => {
             "You will receive multiple character-relationship maps from different parts of the book. Combine them into one coherent map.",
           prompt: summaryPrompt,
         });
-      } catch (error) {
-        console.warn(
-          `Model ${currentModel} failed on final attempt. Trying next model...`
-        );
-      }
+      } catch {}
       compiledAttempt++;
     }
 
