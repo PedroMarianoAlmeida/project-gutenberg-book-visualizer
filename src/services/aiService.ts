@@ -14,6 +14,11 @@ import { asyncWrapper } from "@/utils/asyncWrapper";
 
 const CHUNK_SIZE = 2_000_000;
 
+const models = [
+  google("gemini-2.5-pro-exp-03-25"),
+  google("gemini-2.0-flash-001"),
+];
+
 const splitText = (text: string, chunkSize: number) => {
   const chunks = [];
   for (let i = 0; i < text.length; i += chunkSize) {
@@ -50,20 +55,33 @@ export const createGraphData = async (bookText: string) => {
       Add a relation name and if it is a positive or negative
     `;
 
-    const chunkPromises = chunks.map((chunk) =>
-      generateObject({
-        model: google("gemini-2.0-flash-001"),
-        schema: graphAiSchema,
-        system: systemMessage,
-        prompt: chunk,
-      })
-    );
+    let fulfilled: PromiseFulfilledResult<GenerateObjectResult<GraphData>>[] =
+      [];
+    let attempt = 0;
 
-    const results = await Promise.allSettled(chunkPromises);
-    const fulfilled = results.filter(
-      (r): r is PromiseFulfilledResult<GenerateObjectResult<GraphData>> =>
-        r.status === "fulfilled"
-    );
+    while (attempt < models.length && fulfilled.length === 0) {
+      const currentModel = models[attempt];
+
+      const chunkPromises = chunks.map((chunk) =>
+        generateObject({
+          model: currentModel,
+          schema: graphAiSchema,
+          system: systemMessage,
+          prompt: chunk,
+        })
+      );
+
+      const results = await Promise.allSettled(chunkPromises);
+      fulfilled = results.filter(
+        (r): r is PromiseFulfilledResult<GenerateObjectResult<GraphData>> =>
+          r.status === "fulfilled"
+      );
+
+      if (fulfilled.length === 0) {
+        console.warn(`Model ${currentModel} failed. Trying next model...`);
+      }
+      attempt++;
+    }
 
     if (fulfilled.length === 0) {
       throw new Error("All AI calls failed");
@@ -78,7 +96,7 @@ export const createGraphData = async (bookText: string) => {
       .join("\n");
 
     const final = await generateObject({
-      model: google("gemini-2.0-flash-001"),
+      model: google("gemini-2.5-pro-exp-03-25"),
       schema: graphAiSchema,
       system:
         "You will receive multiple character-relationship maps from different parts of the book. Combine them into one coherent map.",
