@@ -84,7 +84,6 @@ export default async function Page({
   }
 
   const graphSanitized = graphDataSanitize(graphData);
-  console.log({ graphSanitized });
 
   return (
     <main className="p-4 w-full ">
@@ -100,7 +99,7 @@ export default async function Page({
       >
         <Home className="h-5 w-5" />
       </Link>
-      {/* <Result graphData={graphData} /> */}
+      <Result graphData={graphSanitized} />
       <ChatCTA bookId={bookId} />
     </main>
   );

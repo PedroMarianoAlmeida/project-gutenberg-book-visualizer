@@ -3,6 +3,7 @@ import { GraphData } from "@/services/aiService";
 type ColoredNode = GraphData["nodes"][number] & {
   importance: number;
   color: { dark: string; light: string };
+  label: string;
 };
 
 type ColoredLink = GraphData["links"][number] & {
@@ -15,26 +16,26 @@ export type EnhancedGraphData = {
 };
 
 const colorPalette: { dark: string; light: string }[] = [
-  { dark: "#264653", light: "#a8dadc" },
-  { dark: "#2a9d8f", light: "#d9f8f0" },
-  { dark: "#e76f51", light: "#ffddd2" },
-  { dark: "#1d3557", light: "#d0ebff" },
-  { dark: "#f4a261", light: "#ffe5b4" },
-  { dark: "#6d6875", light: "#e9d8fd" },
-  { dark: "#457b9d", light: "#a8dadc" },
-  { dark: "#ff7f50", light: "#ffd6cc" },
-  { dark: "#43aa8b", light: "#caffbf" },
-  { dark: "#9d4edd", light: "#e0bbff" },
-  { dark: "#b5179e", light: "#ffc8dd" },
-  { dark: "#3a0ca3", light: "#b8c0ff" },
-  { dark: "#2b9348", light: "#d8f3dc" },
-  { dark: "#8338ec", light: "#cdb4db" },
-  { dark: "#ff6d00", light: "#ffe0b2" },
-  { dark: "#0077b6", light: "#90e0ef" },
-  { dark: "#8e44ad", light: "#e4d0f3" },
-  { dark: "#4a4e69", light: "#c9ada7" },
-  { dark: "#ef476f", light: "#ffd6e0" },
-  { dark: "#118ab2", light: "#d0f0fd" },
+  { dark: "#1f77b4", light: "#aec7e8" },
+  { dark: "#9467bd", light: "#c5b0d5" },
+  { dark: "#2c3e50", light: "#bdc3c7" },
+  { dark: "#8a2be2", light: "#d8b8ff" },
+  { dark: "#4b0082", light: "#b19cd9" },
+  { dark: "#4682b4", light: "#b0c4de" },
+  { dark: "#5d4037", light: "#d7ccc8" },
+  { dark: "#708090", light: "#c0c0c0" },
+  { dark: "#34495e", light: "#95a5a6" },
+  { dark: "#6c5ce7", light: "#dfe6e9" },
+  { dark: "#FF8C00", light: "#FFDAB9" },
+  { dark: "#8B4513", light: "#F5DEB3" },
+  { dark: "#191970", light: "#87CEFA" },
+  { dark: "#800080", light: "#D8BFD8" },
+  { dark: "#2F4F4F", light: "#DCDCDC" },
+  { dark: "#00008B", light: "#ADD8E6" },
+  { dark: "#9932CC", light: "#E6E6FA" },
+  { dark: "#6A5ACD", light: "#E0FFFF" },
+  { dark: "#CD853F", light: "#FFE4C4" },
+  { dark: "#D2691E", light: "#FFEBCD" },
 ];
 
 export const calculateCharacterImportance = (graphData: GraphData) => {
@@ -90,23 +91,12 @@ export const calculateCharacterImportance = (graphData: GraphData) => {
   return normalizedImportance;
 };
 
-const getColorPairForId = (id: string): { dark: string; light: string } => {
-  const hash = [...id].reduce((acc, char) => acc + char.charCodeAt(0), 0);
-
-  // Use hash to generate HSL values
-  const hue = hash % 360;
-  return {
-    dark: `hsl(${hue}, 70%, 30%)`, // darker tone
-    light: `hsl(${hue}, 70%, 80%)`, // lighter tone
-  };
-};
-
 const linkColorBySentiment = (
   isPositive: boolean
 ): { dark: string; light: string } => {
   return isPositive
-    ? { dark: "hsl(140, 70%, 30%)", light: "hsl(140, 70%, 80%)" } // green tones
-    : { dark: "hsl(0, 70%, 30%)", light: "hsl(0, 70%, 80%)" }; // red tones
+    ? { dark: "lightGreen", light: "darkGreen" } // green tones
+    : { dark: "red", light: "red" }; // red tones
 };
 // Sanitize graphData by filtering out links with missing nodes.
 const usedLinks = (graphData: GraphData) => {
@@ -139,6 +129,7 @@ export const getTop20ImportantNodesWithColor = (graphData: GraphData) => {
     .map((node, index) => ({
       ...node,
       color: colorPalette[index % colorPalette.length],
+      label: `${node.id}: ${node.description}`,
     }));
 
   return topNodes;
