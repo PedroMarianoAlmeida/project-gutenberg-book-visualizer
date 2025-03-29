@@ -10,6 +10,7 @@ import { z } from "zod";
 import { getBookText } from "@/services/gutenbergService";
 
 import { google } from "@ai-sdk/google";
+import { groq } from "@ai-sdk/groq";
 import { asyncWrapper } from "@/utils/asyncWrapper";
 
 const CHUNK_SIZE = 2_000_000;
@@ -17,6 +18,8 @@ const CHUNK_SIZE = 2_000_000;
 const models = [
   google("gemini-2.5-pro-exp-03-25"),
   google("gemini-2.0-flash-001"),
+  groq("deepseek-r1-distill-llama-70b"),
+  groq("gemma2-9b-it"),
 ];
 
 const splitText = (text: string, chunkSize: number) => {
