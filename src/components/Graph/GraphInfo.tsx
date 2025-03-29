@@ -32,7 +32,7 @@ export const GraphInfo = ({
       </SheetTrigger>
       <SheetContent side="left">
         <SheetHeader>
-          <SheetTitle>Graph's Info</SheetTitle>
+          <SheetTitle>Graph{"'"}s Info</SheetTitle>
           <SheetDescription>
             <ScrollArea className="h-screen">
               <Accordion type="single" collapsible className="w-full px-3">
