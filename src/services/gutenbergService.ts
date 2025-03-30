@@ -45,7 +45,7 @@ export const getBookMetadata = async (bookId: number) => {
       (book) => Number(book["Text#"]) === bookId
     );
 
-    if (!metadata) throw new Error("Book metadata not found");
+    if (!metadata) throw new Error("Book not found");
 
     return metadata;
   });
