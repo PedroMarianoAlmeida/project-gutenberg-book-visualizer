@@ -11,7 +11,7 @@ import {
 } from "@/services/dbService";
 
 import { Result } from "@/components/Graph/Result";
-import { Error } from "./Error";
+import { Error } from "@/components/Error";
 import { ChatCTA } from "@/components/Chat/ChatCTA";
 import { GraphInfo } from "@/components/Graph/GraphInfo";
 import { graphDataSanitize } from "@/utils/graphDataSanitize";

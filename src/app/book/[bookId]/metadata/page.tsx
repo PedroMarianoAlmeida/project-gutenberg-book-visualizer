@@ -1,5 +1,6 @@
 import { getBookMetadata } from "@/services/gutenbergService";
 import { MetaDataClient } from "./MetaDataClient";
+import { Error } from "@/components/Error";
 
 export default async function Page({
   params,
@@ -8,14 +9,15 @@ export default async function Page({
 }) {
   const { bookId } = await params;
   const bookMetadata = await getBookMetadata(Number(bookId));
-
   if (!bookMetadata.success) {
     return (
-      <p className="text-destructive">
-        {bookMetadata.message === "Book not found"
-          ? "Book not found"
-          : "Error fetching data"}
-      </p>
+      <Error
+        message={
+          bookMetadata.message === "Book not found"
+            ? "Book not found"
+            : "Error fetching data"
+        }
+      />
     );
   }
 
